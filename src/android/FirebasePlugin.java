@@ -976,7 +976,7 @@ public class FirebasePlugin extends CordovaPlugin {
         // if (!FirebasePlugin.inBackground) return;
 
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager. | PowerManager.ACQUIRE_CAUSES_WAKEUP, tag);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP, tag);
         wakeLock.acquire(30000);
 
         final String packageName = "kr.co.gongdoc.mobile";
