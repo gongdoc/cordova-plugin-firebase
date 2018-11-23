@@ -1,11 +1,13 @@
 package org.apache.cordova.firebase;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Base64;
 import android.util.Log;
@@ -968,5 +970,23 @@ public class FirebasePlugin extends CordovaPlugin {
                 }
             }
         });
+    }
+
+    public static void bringToForeground(Context context, String tag) {
+        // if (!FirebasePlugin.inBackground) return;
+
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager. | PowerManager.ACQUIRE_CAUSES_WAKEUP, tag);
+        wakeLock.acquire(30000);
+
+        final String packageName = "kr.co.gongdoc.mobile";
+        final String className = "MainActivity";
+
+        Intent intent = new Intent("android.intent.action.MAIN");
+        intent.setComponent(new ComponentName(packageName, packageName + "." + className));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Context context = (FirebasePlugin.notificationCallbackContext).webView.getContext();
+        context.startActivity(intent);
     }
 }

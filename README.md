@@ -1,3 +1,7 @@
+# Add on summary for Gongdoc
+
+- Automatic wake-up on notification push
+
 [![Build Status](https://travis-ci.org/arnesson/cordova-plugin-firebase.svg?branch=master)](https://travis-ci.org/arnesson/cordova-plugin-firebase)
 
 # cordova-plugin-firebase
