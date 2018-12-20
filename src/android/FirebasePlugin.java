@@ -972,11 +972,10 @@ public class FirebasePlugin extends CordovaPlugin {
         });
     }
 
-    public static void bringToForeground(Context context, String tag) {
-        // if (!FirebasePlugin.inBackground) return;
-
+    public static PowerManager.WakeLock bringToForeground(Context context, String tag) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP, tag);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock(
+                PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, tag);
         wakeLock.acquire(30000);
 
         final String packageName = "kr.co.gongdoc.mobile";
@@ -988,5 +987,7 @@ public class FirebasePlugin extends CordovaPlugin {
 
         // Context context = (FirebasePlugin.notificationCallbackContext).webView.getContext();
         context.startActivity(intent);
+
+        return wakeLock;
     }
 }

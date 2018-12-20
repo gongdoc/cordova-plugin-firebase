@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.app.Notification;
@@ -66,9 +68,10 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         }
 
         //
+        PowerManager.WakeLock wakeLock = null;
         try {
             Log.d(TAG, "trying to bring the app to foreground");
-            FirebasePlugin.bringToForeground(this.getApplicationContext(), TAG);
+            wakeLock = FirebasePlugin.bringToForeground(this.getApplicationContext(), TAG);
         } catch (Exception e) {
             Log.d(TAG, "bringToForeground fail");
         }
@@ -115,6 +118,10 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {
             boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
             sendNotification(id, title, text, data, showNotification, sound, lights);
+        }
+
+        if (wakeLock != null) {
+            wakeLock.release();
         }
     }
 
