@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.app.Notification;
@@ -67,7 +65,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             return;
         }
 
-        //
+        /*
         PowerManager.WakeLock wakeLock = null;
         try {
             Log.d(TAG, "trying to bring the app to foreground");
@@ -75,12 +73,14 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         } catch (Exception e) {
             Log.d(TAG, "bringToForeground fail");
         }
+        */
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         String title = "";
         String text = "";
         String id = "";
+        String wakeUp = "";
         String sound = "";
         String lights = "";
         Map<String, String> data = remoteMessage.getData();
@@ -93,6 +93,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             title = data.get("title");
             text = data.get("text");
             id = data.get("id");
+            wakeUp = data.get("wakeUp");
             sound = data.get("sound");
             lights = data.get("lights"); //String containing hex ARGB color, miliseconds on, miliseconds off, example: '#FFFF00FF,1000,3000'
 
@@ -111,18 +112,30 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Notification Message id: " + id);
         Log.d(TAG, "Notification Message Title: " + title);
         Log.d(TAG, "Notification Message Body/Text: " + text);
+        Log.d(TAG, "Notification Message WakeUp: " + wakeUp);
         Log.d(TAG, "Notification Message Sound: " + sound);
         Log.d(TAG, "Notification Message Lights: " + lights);
 
         // TODO: Add option to developer to configure if show notification when app on foreground
-        if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {
-            boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
-            sendNotification(id, title, text, data, showNotification, sound, lights);
+        if (wakeUp.equals("Y")) {
+            Context context = this.getApplicationContext();
+            Intent intent = new Intent(context, OverlayService.class);
+            intent.setAction(Intent.ACTION_SCREEN_ON);
+            intent.putExtra("title", title);
+            intent.putExtra("text", text);
+            context.startService(intent);
+        } else {
+            if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {
+                boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
+                sendNotification(id, title, text, data, showNotification, sound, lights);
+            }
         }
 
+        /*
         if (wakeLock != null) {
             wakeLock.release();
         }
+        */
     }
 
     private void sendNotification(String id, String title, String messageBody, Map<String, String> data, boolean showNotification, String sound, String lights) {
