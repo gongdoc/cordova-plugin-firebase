@@ -7,13 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.IBinder;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -31,13 +35,8 @@ public class OverlayService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "OverlayService onStartCommand called");
-
         String title = intent.getExtras().getString("title");
         String text = intent.getExtras().getString("text");
-
-        Log.d(TAG, "title: " + title);
-        Log.d(TAG, "text: " + text);
 
         showDialog(title, text);
         return super.onStartCommand(intent, flags, startId);
@@ -46,8 +45,6 @@ public class OverlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "OverlayService onCreate called");
-
         registerOverlayReceiver();
     }
 
@@ -75,13 +72,9 @@ public class OverlayService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG, "[onReceive]" + action);
 
             String title = intent.getExtras().getString("title");
             String text = intent.getExtras().getString("text");
-
-            Log.d(TAG, "title: " + title);
-            Log.d(TAG, "text: " + text);
 
             if (action.equals(Intent.ACTION_SCREEN_ON)) {
                 Log.d(TAG, "BroadcastReceiver SCREEN_ON");
@@ -97,18 +90,33 @@ public class OverlayService extends Service {
     };
 
     private void showDialog(String title, String text) {
-        Log.d(TAG, "showDialog begin");
-
-        if (view != null) {
-            Log.d(TAG, "Dialog already shown");
-            return;
-        }
+        if (view != null) return;
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         int layoutId = getResources().getIdentifier("fragment_overlay", "layout", getPackageName());
         view = View.inflate(getApplicationContext(), layoutId, null);
         view.setTag(TAG);
+
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideDialog();
+                return true;
+            }
+        });
+
+        Drawable background = view.getBackground();
+        background.setAlpha(192);
+
+        int dialogId = getResources().getIdentifier("dialog", "id", getPackageName());
+        RelativeLayout dialog = view.findViewById(dialogId);
+        dialog.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
 
         int titleId = getResources().getIdentifier("textTitle", "id", getPackageName());
         TextView titleText = view.findViewById(titleId);
@@ -117,6 +125,7 @@ public class OverlayService extends Service {
         int contentId = getResources().getIdentifier("textContent", "id", getPackageName());
         TextView contentText = view.findViewById(contentId);
         contentText.setText(text);
+        contentText.setMovementMethod(new ScrollingMovementMethod());
 
         int okId = getResources().getIdentifier("buttonOk", "id", getPackageName());
         Button buttonOk = view.findViewById(okId);
@@ -155,11 +164,10 @@ public class OverlayService extends Service {
             Log.d(TAG, "Build version low");
 
             layoutParams = new WindowManager.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
                     WindowManager.LayoutParams.TYPE_TOAST,
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                     PixelFormat.TRANSLUCENT);
@@ -167,11 +175,10 @@ public class OverlayService extends Service {
             Log.d(TAG, "Build version high");
 
             layoutParams = new WindowManager.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
                     WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                     PixelFormat.TRANSLUCENT);
@@ -190,8 +197,6 @@ public class OverlayService extends Service {
             view.invalidate();
             windowManager.removeView(view);
             view = null;
-        } else {
-            Log.d(TAG, "Dialog NOT removed");
         }
     }
 }

@@ -1,52 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="50dp"
-    android:layout_marginTop="100dp"
-    android:layout_marginRight="50dp"
-    android:layout_marginBottom="100dp"
-    android:background="@android:color/background_light"
-    android:orientation="vertical"
-    tools:context=".OverlayFragment">
+    android:layout_marginLeft="0dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginRight="0dp"
+    android:layout_marginBottom="0dp"
+    android:background="@android:color/black"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <TextView
-        android:id="@+id/textTitle"
+    <RelativeLayout
+        android:id="@+id/dialog"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:text="@android:string/untitled" />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="120dp"
+        android:background="@android:color/background_light"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textContent"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:text="@android:string/untitled" />
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="#2196f3"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:text="@android:string/untitled" />
 
-    <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/textContent"
+            android:layout_below="@id/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:scrollbars="vertical"
+            android:text="@android:string/untitled" />
 
-        <Button
-            android:id="@+id/buttonCancel"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/buttons"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_dark"
-            android:text="@android:string/cancel"
-            android:textColor="@android:color/black" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/buttonOk"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/darker_gray"
-            android:text="@android:string/ok"
-            android:textColor="@android:color/background_dark" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/buttonCancel"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".50"
+                android:background="@android:color/darker_gray"
+                android:text="@android:string/cancel"
+                android:textColor="@android:color/background_dark" />
+
+            <Button
+                android:id="@+id/buttonOk"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".50"
+                android:background="@android:color/holo_blue_dark"
+                android:text="@android:string/ok"
+                android:textColor="@android:color/background_dark" />
+        </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
