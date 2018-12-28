@@ -117,12 +117,17 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Notification Message Lights: " + lights);
 
         // TODO: Add option to developer to configure if show notification when app on foreground
-        if (wakeUp.equals("Y")) {
+        if (wakeUp != null && wakeUp.equals("Y")) {
             Context context = this.getApplicationContext();
             Intent intent = new Intent(context, OverlayService.class);
             intent.setAction(Intent.ACTION_SCREEN_ON);
-            intent.putExtra("title", title);
-            intent.putExtra("text", text);
+
+            Bundle bundle = new Bundle();
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                bundle.putString(entry.getKey(), entry.getValue());
+            }
+            intent.putExtras(bundle);
+
             context.startService(intent);
         } else {
             if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {

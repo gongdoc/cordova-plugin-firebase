@@ -3,15 +3,21 @@ package org.apache.cordova.firebase;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +41,7 @@ public class OverlayService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String title = intent.getExtras().getString("title");
-        String text = intent.getExtras().getString("text");
-
-        showDialog(title, text);
+        showDialog(intent.getExtras());
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -73,12 +76,11 @@ public class OverlayService extends Service {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            String title = intent.getExtras().getString("title");
-            String text = intent.getExtras().getString("text");
+            Bundle data = intent.getExtras();
 
             if (action.equals(Intent.ACTION_SCREEN_ON)) {
                 Log.d(TAG, "BroadcastReceiver SCREEN_ON");
-                showDialog(title, text);
+                showDialog(data);
             }
             else if (action.equals(Intent.ACTION_USER_PRESENT)) {
                 hideDialog();
@@ -89,7 +91,7 @@ public class OverlayService extends Service {
         }
     };
 
-    private void showDialog(String title, String text) {
+    private void showDialog(Bundle bundle) {
         if (view != null) return;
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -118,14 +120,30 @@ public class OverlayService extends Service {
             }
         });
 
+        dialog.setFocusableInTouchMode(true);
+        dialog.requestFocus();
+        dialog.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    hideDialog();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
         int titleId = getResources().getIdentifier("textTitle", "id", getPackageName());
         TextView titleText = view.findViewById(titleId);
-        titleText.setText(title);
+        titleText.setText(bundle.getString("title"));
 
         int contentId = getResources().getIdentifier("textContent", "id", getPackageName());
         TextView contentText = view.findViewById(contentId);
-        contentText.setText(text);
+        contentText.setText(bundle.getString("text"));
         contentText.setMovementMethod(new ScrollingMovementMethod());
+
+        final Bundle data = bundle;
 
         int okId = getResources().getIdentifier("buttonOk", "id", getPackageName());
         Button buttonOk = view.findViewById(okId);
@@ -142,6 +160,10 @@ public class OverlayService extends Service {
                 Intent intent = new Intent("android.intent.action.MAIN");
                 intent.setComponent(new ComponentName(packageName, packageName + "." + className));
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                FirebasePlugin.sendNotification(data, getApplicationContext());
+                intent.putExtras(data);
+
                 startActivity(intent);
             }
         });
@@ -187,6 +209,21 @@ public class OverlayService extends Service {
         view.setVisibility(View.VISIBLE);
         windowManager.addView(view, layoutParams);
         windowManager.updateViewLayout(view, layoutParams);
+
+        /*
+        Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        String sound = bundle.getString("sound");
+        if (sound != null) {
+            Log.d(TAG, "sound before path is: " + sound);
+            soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
+            Log.d(TAG, "Parsed sound is: " + soundPath.toString());
+        } else {
+            Log.d(TAG, "Sound was null ");
+        }
+
+        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), soundPath);
+        mp.start();
+        */
     }
 
     private void hideDialog() {
