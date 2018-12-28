@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -25,6 +27,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.io.IOException;
 
 
 public class OverlayService extends Service {
@@ -172,6 +176,8 @@ public class OverlayService extends Service {
                 Log.d(TAG, "Button OK clicked");
 
                 hideDialog();
+                Bundle dataChanged = data;
+                dataChanged.putString("link", "/my-order-bids/new/" + data.getString("workId"));
                 startActivity(data);
             }
         });
@@ -218,20 +224,22 @@ public class OverlayService extends Service {
         windowManager.addView(view, layoutParams);
         windowManager.updateViewLayout(view, layoutParams);
 
-        /*
-        Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        String sound = bundle.getString("sound");
-        if (sound != null) {
-            Log.d(TAG, "sound before path is: " + sound);
-            soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
-            Log.d(TAG, "Parsed sound is: " + soundPath.toString());
-        } else {
-            Log.d(TAG, "Sound was null ");
-        }
+        try {
+            Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            String sound = bundle.getString("sound");
+            if (sound != null) {
+                Log.d(TAG, "sound before path is: " + sound);
+                soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
+                Log.d(TAG, "Parsed sound is: " + soundPath.toString());
+            } else {
+                Log.d(TAG, "Sound was null ");
+            }
 
-        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), soundPath);
-        mp.start();
-        */
+            Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), soundPath);
+            ringtone.play();
+        } catch (Exception ex) {
+            Log.d(TAG, "Sound file load failed");
+        }
     }
 
     private void hideDialog() {
@@ -251,7 +259,7 @@ public class OverlayService extends Service {
 
         Intent intent = new Intent("android.intent.action.MAIN");
         intent.setComponent(new ComponentName(packageName, packageName + "." + className));
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         FirebasePlugin.sendNotification(data, getApplicationContext());
         intent.putExtras(data);
