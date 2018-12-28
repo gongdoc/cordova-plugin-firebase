@@ -94,6 +94,8 @@ public class OverlayService extends Service {
     private void showDialog(Bundle bundle) {
         if (view != null) return;
 
+        final Bundle data = bundle;
+
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         int layoutId = getResources().getIdentifier("fragment_overlay", "layout", getPackageName());
@@ -116,6 +118,8 @@ public class OverlayService extends Service {
         dialog.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                hideDialog();
+                startActivity(data);
                 return true;
             }
         });
@@ -136,14 +140,29 @@ public class OverlayService extends Service {
 
         int titleId = getResources().getIdentifier("textTitle", "id", getPackageName());
         TextView titleText = view.findViewById(titleId);
-        titleText.setText(bundle.getString("title"));
+        titleText.setText(bundle.getString("workAddress"));
 
         int contentId = getResources().getIdentifier("textContent", "id", getPackageName());
         TextView contentText = view.findViewById(contentId);
-        contentText.setText(bundle.getString("text"));
-        contentText.setMovementMethod(new ScrollingMovementMethod());
+        String content = bundle.getString("workType");
+        content += "(" + bundle.getString("workEquipments") + ")";
+        content += "\n" + bundle.getString("workDate");
+        content += "\n" + bundle.getString("workPayTime");
 
-        final Bundle data = bundle;
+        String payPerDay = bundle.getString("workPayPerDay");
+        if (payPerDay != null) content += "\n" + payPerDay;
+
+        String pickupPosition = bundle.getString("workPickupPosition");
+        if (pickupPosition != null) content += "\n" + pickupPosition;
+
+        String requestText = bundle.getString("workRequestText");
+        if (requestText != null) content += "\n" + requestText;
+
+        String attachments = bundle.getString("workAttachments");
+        if (attachments != null) content += "\n" + attachments;
+
+        contentText.setText(content);
+        contentText.setMovementMethod(new ScrollingMovementMethod());
 
         int okId = getResources().getIdentifier("buttonOk", "id", getPackageName());
         Button buttonOk = view.findViewById(okId);
@@ -152,19 +171,8 @@ public class OverlayService extends Service {
             public void onClick(View v) {
                 Log.d(TAG, "Button OK clicked");
 
-                final String packageName = "kr.co.gongdoc.mobile";
-                final String className = "MainActivity";
-
                 hideDialog();
-
-                Intent intent = new Intent("android.intent.action.MAIN");
-                intent.setComponent(new ComponentName(packageName, packageName + "." + className));
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                FirebasePlugin.sendNotification(data, getApplicationContext());
-                intent.putExtras(data);
-
-                startActivity(intent);
+                startActivity(data);
             }
         });
 
@@ -199,7 +207,7 @@ public class OverlayService extends Service {
             layoutParams = new WindowManager.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
@@ -235,5 +243,19 @@ public class OverlayService extends Service {
             windowManager.removeView(view);
             view = null;
         }
+    }
+
+    private void startActivity(Bundle data) {
+        final String packageName = "kr.co.gongdoc.mobile";
+        final String className = "MainActivity";
+
+        Intent intent = new Intent("android.intent.action.MAIN");
+        intent.setComponent(new ComponentName(packageName, packageName + "." + className));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        FirebasePlugin.sendNotification(data, getApplicationContext());
+        intent.putExtras(data);
+
+        startActivity(intent);
     }
 }

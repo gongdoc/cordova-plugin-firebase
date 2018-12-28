@@ -34,7 +34,7 @@
             android:id="@+id/textContent"
             android:layout_below="@id/textTitle"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
             android:scrollbars="vertical"
             android:text="@android:string/untitled" />
 
