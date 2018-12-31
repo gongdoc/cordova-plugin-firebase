@@ -9,14 +9,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,10 +24,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.io.IOException;
 
 
 public class OverlayService extends Service {
@@ -96,7 +94,9 @@ public class OverlayService extends Service {
     };
 
     private void showDialog(Bundle bundle) {
-        if (view != null) return;
+        if (view != null) {
+            hideDialog();
+        }
 
         final Bundle data = bundle;
 
@@ -148,24 +148,25 @@ public class OverlayService extends Service {
 
         int contentId = getResources().getIdentifier("textContent", "id", getPackageName());
         TextView contentText = view.findViewById(contentId);
-        String content = bundle.getString("workType");
-        content += "(" + bundle.getString("workEquipments") + ")";
-        content += "\n" + bundle.getString("workDate");
-        content += "\n" + bundle.getString("workPayTime");
+        String contentHtml = "<h3>" + bundle.getString("workType") + "(" + bundle.getString("workEquipments") + ")</h3>";
+        contentHtml += "<ul style=\"list-style:none;padding-left:10px;\">";
+        contentHtml += "<li>" + bundle.getString("workDate") + "</li>";
+        contentHtml += "<li>" + bundle.getString("workPayTime") + "</li>";
 
         String payPerDay = bundle.getString("workPayPerDay");
-        if (payPerDay != null) content += "\n" + payPerDay;
+        if (payPerDay != null) contentHtml += "<li>" + payPerDay + "</li>";
 
         String pickupPosition = bundle.getString("workPickupPosition");
-        if (pickupPosition != null) content += "\n" + pickupPosition;
+        if (pickupPosition != null) contentHtml += "<li>" + pickupPosition + "</li>";
 
         String requestText = bundle.getString("workRequestText");
-        if (requestText != null) content += "\n" + requestText;
+        if (requestText != null) contentHtml += "<li>" + requestText + "</li>";
 
         String attachments = bundle.getString("workAttachments");
-        if (attachments != null) content += "\n" + attachments;
+        if (attachments != null) contentHtml += "<li>" + attachments + "</li>";
+        contentHtml += "</ul>";
 
-        contentText.setText(content);
+        contentText.setText(Html.fromHtml(contentHtml));
         contentText.setMovementMethod(new ScrollingMovementMethod());
 
         int okId = getResources().getIdentifier("buttonOk", "id", getPackageName());
@@ -178,12 +179,12 @@ public class OverlayService extends Service {
                 hideDialog();
                 Bundle dataChanged = data;
                 dataChanged.putString("link", "/my-order-bids/new/" + data.getString("workId"));
-                startActivity(data);
+                startActivity(dataChanged);
             }
         });
 
         int cancelId = getResources().getIdentifier("buttonCancel", "id", getPackageName());
-        Button buttonCancel = view.findViewById(cancelId);
+        ImageButton buttonCancel = view.findViewById(cancelId);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
