@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.app.Notification;
@@ -65,15 +66,19 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             return;
         }
 
-        /*
+
         PowerManager.WakeLock wakeLock = null;
         try {
-            Log.d(TAG, "trying to bring the app to foreground");
-            wakeLock = FirebasePlugin.bringToForeground(this.getApplicationContext(), TAG);
+            PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+            PowerManager.WakeLock wakeLock = pm.newWakeLock(
+                    PowerManager.FULL_WAKE_LOCK
+                            | PowerManager.ACQUIRE_CAUSES_WAKEUP
+                            | PowerManager.ON_AFTER_RELEASE,
+                    "kr.co.gongdoc.mobile:FirebasePlugin");
+            wakeLock.acquire(30000);
         } catch (Exception e) {
             Log.d(TAG, "bringToForeground fail");
         }
-        */
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
@@ -117,6 +122,12 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Notification Message Lights: " + lights);
 
         // TODO: Add option to developer to configure if show notification when app on foreground
+
+        if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {
+            boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
+            sendNotification(id, title, text, data, showNotification, sound, lights);
+        }
+/*
         if (wakeUp != null && wakeUp.equals("Y")) {
             Context context = this.getApplicationContext();
             Intent intent = new Intent(context, OverlayService.class);
@@ -129,18 +140,13 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             intent.putExtras(bundle);
 
             context.startService(intent);
-        } else {
-            if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {
-                boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
-                sendNotification(id, title, text, data, showNotification, sound, lights);
-            }
         }
+*/
 
-        /*
         if (wakeLock != null) {
             wakeLock.release();
         }
-        */
+
     }
 
     private void sendNotification(String id, String title, String messageBody, Map<String, String> data, boolean showNotification, String sound, String lights) {
