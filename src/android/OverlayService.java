@@ -195,35 +195,36 @@ public class OverlayService extends Service {
             }
         });
 
-        WindowManager.LayoutParams layoutParams;
+        try {
+            Log.d(TAG, "Build.VERSION : " + Build.VERSION.SDK_INT);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            Log.d(TAG, "Build version low");
+            WindowManager.LayoutParams layoutParams;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                layoutParams = new WindowManager.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                        PixelFormat.TRANSLUCENT);
+            } else {
+                layoutParams = new WindowManager.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.TYPE_TOAST,
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                        PixelFormat.TRANSLUCENT);
+            }
 
-            layoutParams = new WindowManager.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.TYPE_TOAST,
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                    PixelFormat.TRANSLUCENT);
-        } else {
-            Log.d(TAG, "Build version high");
-
-            layoutParams = new WindowManager.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                    PixelFormat.TRANSLUCENT);
+            view.setVisibility(View.VISIBLE);
+            windowManager.addView(view, layoutParams);
+            windowManager.updateViewLayout(view, layoutParams);
+        } catch (Exception ex) {
+            Log.d(TAG, "Load view failed");
+            Log.d(TAG, ex.getMessage());
         }
-
-        view.setVisibility(View.VISIBLE);
-        windowManager.addView(view, layoutParams);
-        windowManager.updateViewLayout(view, layoutParams);
 
         try {
             Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
