@@ -1,19 +1,15 @@
 package org.apache.cordova.firebase;
 
-import android.app.Activity;
 import android.app.NotificationManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Base64;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
 import java.lang.reflect.Field;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,10 +44,7 @@ import java.util.Set;
 // Firebase PhoneAuth
 import java.util.concurrent.TimeUnit;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -970,24 +963,5 @@ public class FirebasePlugin extends CordovaPlugin {
                 }
             }
         });
-    }
-
-    public static PowerManager.WakeLock bringToForeground(Context context, String tag) {
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = pm.newWakeLock(
-                PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, tag);
-        wakeLock.acquire(30000);
-
-        final String packageName = "kr.co.gongdoc.mobile";
-        final String className = "MainActivity";
-
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.setComponent(new ComponentName(packageName, packageName + "." + className));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        // Context context = (FirebasePlugin.notificationCallbackContext).webView.getContext();
-        context.startActivity(intent);
-
-        return wakeLock;
     }
 }
