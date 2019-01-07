@@ -70,7 +70,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         PowerManager.WakeLock wakeLock = null;
         try {
             PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-            PowerManager.WakeLock wakeLock = pm.newWakeLock(
+            wakeLock = pm.newWakeLock(
                     PowerManager.FULL_WAKE_LOCK
                             | PowerManager.ACQUIRE_CAUSES_WAKEUP
                             | PowerManager.ON_AFTER_RELEASE,
