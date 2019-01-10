@@ -43,7 +43,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 					<action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
 				</intent-filter>
 			</service>
-      <service android:name="org.apache.cordova.firebase.OverlayService" />
+      <service android:name="org.apache.cordova.firebase.OverlayService" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 			<receiver android:name="org.apache.cordova.firebase.OnNotificationOpenReceiver"></receiver>
 		</config-file>
 		<resource-file src="src/android/google-services.json" target="."/>

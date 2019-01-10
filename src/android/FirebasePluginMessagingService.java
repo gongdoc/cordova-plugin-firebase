@@ -66,7 +66,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             return;
         }
 
-
+/*
         PowerManager.WakeLock wakeLock = null;
         try {
             PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
@@ -79,7 +79,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         } catch (Exception e) {
             Log.d(TAG, "bringToForeground fail");
         }
-
+*/
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         String title = "";
@@ -123,13 +123,22 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
         // TODO: Add option to developer to configure if show notification when app on foreground
 
-        if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {
-            boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
-            sendNotification(id, title, text, data, showNotification, sound, lights);
-        }
-/*
         if (wakeUp != null && wakeUp.equals("Y")) {
             Context context = this.getApplicationContext();
+
+            Intent intent = new Intent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setClass(context, OverlayActivity.class);
+
+            Bundle bundle = new Bundle();
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                bundle.putString(entry.getKey(), entry.getValue());
+            }
+            intent.putExtras(bundle);
+
+            startActivity(intent);
+/*
             Intent intent = new Intent(context, OverlayService.class);
             intent.setAction(Intent.ACTION_SCREEN_ON);
 
@@ -140,13 +149,18 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             intent.putExtras(bundle);
 
             context.startService(intent);
-        }
 */
-
+        } else {
+            if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {
+                boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
+                sendNotification(id, title, text, data, showNotification, sound, lights);
+            }
+        }
+/*
         if (wakeLock != null) {
             wakeLock.release();
         }
-
+*/
     }
 
     private void sendNotification(String id, String title, String messageBody, Map<String, String> data, boolean showNotification, String sound, String lights) {
