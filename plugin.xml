@@ -63,6 +63,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		<source-file src="src/android/FirebasePluginMessageReceiverManager.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/OverlayService.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/OverlayActivity.java" target-dir="src/org/apache/cordova/firebase" />
+		<source-file src="src/android/PushWakeLock.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/colors.xml" target-dir="res/values" />
 
 		<framework src="src/android/build.gradle" custom="true" type="gradleReference" />
