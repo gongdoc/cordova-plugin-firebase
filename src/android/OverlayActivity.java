@@ -109,18 +109,9 @@ public class OverlayActivity extends Activity {
             public void onClick(View v) {
                 Log.d(TAG, "Button OK clicked");
 
-                final String packageName = "kr.co.gongdoc.mobile";
-                final String className = "MainActivity";
-
-                Intent intent = new Intent("android.intent.action.MAIN");
-                intent.setComponent(new ComponentName(packageName, packageName + "." + className));
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                Bundle dataChanged = bundle;
-                dataChanged.putString("link", "/my-order-bids/new/" + bundle.getString("workId"));
-                intent.putExtras(dataChanged);
-
-                startActivity(intent);
+                Bundle bundleChanged = bundle;
+                bundleChanged.putString("link", "/my-order-bids/new/" + bundle.getString("workId"));
+                startActivity(bundleChanged);
             }
         });
 
@@ -135,7 +126,6 @@ public class OverlayActivity extends Activity {
             }
         });
 
-
         PushWakeLock.acquireWakeLock(getApplicationContext());
     }
 
@@ -145,4 +135,20 @@ public class OverlayActivity extends Activity {
 
         super.onDestroy();
     }
+
+
+    private void startActivity(Bundle data) {
+        final String packageName = "kr.co.gongdoc.mobile";
+        final String className = "MainActivity";
+
+        Intent intent = new Intent("android.intent.action.MAIN");
+        intent.setComponent(new ComponentName(packageName, packageName + "." + className));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        FirebasePlugin.sendNotification(data, getApplicationContext());
+        intent.putExtras(data);
+
+        startActivity(intent);
+    }
+
 }
