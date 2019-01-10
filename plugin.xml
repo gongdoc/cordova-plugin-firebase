@@ -33,6 +33,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 			<service android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementService" />
 		</config-file>
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+  		<activity android:name="org.apache.cordova.firebase.OverlayActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 			<service android:name="org.apache.cordova.firebase.FirebasePluginMessagingService">
 				<intent-filter>
 					<action android:name="com.google.firebase.MESSAGING_EVENT"/>
@@ -43,7 +44,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 					<action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
 				</intent-filter>
 			</service>
-      <service android:name="org.apache.cordova.firebase.OverlayService" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+      <service android:name="org.apache.cordova.firebase.OverlayService" />
 			<receiver android:name="org.apache.cordova.firebase.OnNotificationOpenReceiver"></receiver>
 		</config-file>
 		<resource-file src="src/android/google-services.json" target="."/>
@@ -61,6 +62,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		<source-file src="src/android/FirebasePluginMessageReceiver.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/FirebasePluginMessageReceiverManager.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/OverlayService.java" target-dir="src/org/apache/cordova/firebase" />
+		<source-file src="src/android/OverlayActivity.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/colors.xml" target-dir="res/values" />
 
 		<framework src="src/android/build.gradle" custom="true" type="gradleReference" />
