@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/background"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="0dp"
-    android:layout_marginTop="0dp"
     android:layout_marginRight="0dp"
-    android:layout_marginBottom="0dp"
+    android:layout_centerVertical="true"
     android:background="@android:color/black"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/dialog"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_height="280dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_centerVertical="true"
-        android:background="@android:color/background_light"
+        android:background="@drawable/dialog_bg"
+        android:clipToPadding="true"
         android:orientation="vertical">
-
 
         <RelativeLayout
             android:id="@+id/header"
             android:layout_alignParentTop="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:background="#444444">
 
             <TextView
                 android:id="@+id/textTitle"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginEnd="50dp"
-                android:padding="5dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="110dp"
+                android:padding="10dp"
                 android:background="#444444"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
+                android:fontFamily="@font/noto_sans_kr_bold"
                 android:text="@android:string/untitled"
                 android:textColor="@android:color/white"
                 android:textSize="24sp" />
@@ -46,29 +46,47 @@
             <ImageButton
                 android:id="@+id/buttonCancel"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
-                android:background="@drawable/ic_action_close" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/ic_clear_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/buttonAlarm"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_toStartOf="@+id/buttonCancel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_notifications_white_24dp" />
         </RelativeLayout>
 
         <TextView
             android:id="@+id/textContent"
             android:layout_below="@id/header"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="160dp"
             android:padding="10dp"
             android:scrollbars="vertical"
-            android:text="@android:string/untitled" />
+            android:fontFamily="@font/noto_sans_kr_regular"
+            android:text="@android:string/untitled"
+            android:textSize="18sp"
+            android:lineSpacingMultiplier="1.5" />
 
         <Button
             android:id="@+id/buttonOk"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
+            android:padding="10dp"
             android:background="#2196f3"
-            android:text="@android:string/ok"
+            android:text="지원하기"
             android:textColor="@android:color/white"
             android:textSize="24sp" />
     </RelativeLayout>

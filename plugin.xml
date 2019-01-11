@@ -50,11 +50,12 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		<resource-file src="src/android/google-services.json" target="."/>
 		<resource-file src="src/android/cordova-plugin-firebase-strings.xml" target="res/values/cordova-plugin-firebase-strings.xml" />
 		<resource-file src="src/android/fragment_overlay.xml" target="res/layout/fragment_overlay.xml" />
-		<resource-file src="src/android/ic_action_close.png" target="res/drawable-hdpi/ic_action_close.png" />
-		<resource-file src="src/android/ic_action_close.png" target="res/drawable-mdpi/ic_action_close.png" />
-		<resource-file src="src/android/ic_action_close.png" target="res/drawable-xhdpi/ic_action_close.png" />
-		<resource-file src="src/android/ic_action_close.png" target="res/drawable-xxhdpi/ic_action_close.png" />
-		<resource-file src="src/android/ic_action_close.png" target="res/drawable-xxxhdpi/ic_action_close.png" />
+		<resource-file src="src/android/dialog_bg.xml" target="res/drawable/dialog_bg.xml" />
+		<resource-file src="src/android/ic_clear_white_24dp.xml" target="res/drawable/ic_clear_white_24dp.xml" />
+		<resource-file src="src/android/ic_notifications_white_24dp.xml" target="res/drawable/ic_notifications_white_24dp.xml" />
+		<resource-file src="src/android/noto_sans.xml" target="res/font/noto_sans.xml" />
+		<resource-file src="src/android/noto_sans_kr_bold.otf" target="res/font/noto_sans_kr_bold.otf" />
+		<resource-file src="src/android/noto_sans_kr_regular.otf" target="res/font/noto_sans_kr_regular.otf" />
 		<source-file src="src/android/FirebasePlugin.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/OnNotificationOpenReceiver.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/FirebasePluginInstanceIDService.java" target-dir="src/org/apache/cordova/firebase" />

@@ -150,12 +150,13 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             context.startService(intent);
 */
-        } else {
+        }
+//        } else {
             if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {
                 boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
                 sendNotification(id, title, text, data, showNotification, sound, lights);
             }
-        }
+//        }
 /*
         if (wakeLock != null) {
             wakeLock.release();
@@ -216,13 +217,13 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                         notificationBuilder.setLights(lightArgb, lightOnMs, lightOffMs);
                     }
                 } catch (Exception e) {
+                    Log.d(TAG, "Lights set failed");
                 }
             }
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 int accentID = getResources().getIdentifier("accent", "color", getPackageName());
                 notificationBuilder.setColor(getResources().getColor(accentID, null));
-
             }
 
             Notification notification = notificationBuilder.build();
