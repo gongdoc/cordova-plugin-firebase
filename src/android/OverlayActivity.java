@@ -133,12 +133,12 @@ public class OverlayActivity extends Activity {
 
         SpannableString contentSpan = new SpannableString(contentAll);
         contentSpan.setSpan(
-                new TextAppearanceSpan(null, 0, 100, null, null),
+                new TextAppearanceSpan(null, 0, 75, null, null),
                 0, contentHead.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         Integer pos = contentHead.length();
         for (Integer item: contentBodySize) {
-            contentSpan.setSpan(new BulletSpan(25), pos, pos + item, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            contentSpan.setSpan(new BulletSpan(30), pos, pos + item, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             pos += item;
         }
 
