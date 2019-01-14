@@ -25,6 +25,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -85,7 +87,7 @@ public class OverlayActivity extends Activity {
         int titleId = getResources().getIdentifier("textTitle", "id", getPackageName());
         TextView titleText = view.findViewById(titleId);
         titleText.setText(bundle.getString("workAddress"));
-
+/*
         int contentId = getResources().getIdentifier("textContent", "id", getPackageName());
         TextView contentText = view.findViewById(contentId);
 
@@ -133,7 +135,7 @@ public class OverlayActivity extends Activity {
 
         SpannableString contentSpan = new SpannableString(contentAll);
         contentSpan.setSpan(
-                new TextAppearanceSpan(null, 0, 75, null, null),
+                new TextAppearanceSpan(null, 0, 100, null, null),
                 0, contentHead.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         Integer pos = contentHead.length();
@@ -144,6 +146,54 @@ public class OverlayActivity extends Activity {
 
         contentText.setText(contentSpan, TextView.BufferType.SPANNABLE);
         contentText.setMovementMethod(new ScrollingMovementMethod());
+*/
+        String webViewStyle = "h3 { margin:0;margin-bottom:10px;font-size: 1.5em; }"
+                + "ul { margin:0;padding:0 0 0 10px; }"
+                + "li { margin-left:20px;color:#666;font-size:1.2em;line-height:1.5; }";
+        String webViewData = "<html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes\"><style>"
+                + webViewStyle + "</style></head><body>";
+
+        webViewData += "<h3>" + bundle.getString("workType") + "(" + bundle.getString("workEquipments") + ")</h3>";
+
+        webViewData += "<ul>";
+        webViewData += "<li>" + bundle.getString("workDate") + "</li>";
+        webViewData += "<li>" + bundle.getString("workPayTime") + "</li>";
+        String payPerDay = bundle.getString("workPayPerDay");
+        if (payPerDay != null) {
+            webViewData += "<li>" + payPerDay + "</li>";
+        }
+
+        String pickupPosition = bundle.getString("workPickupPosition");
+        if (pickupPosition != null) {
+            webViewData += "<li>" + pickupPosition + "</li>";
+        }
+
+        String requestText = bundle.getString("workRequestText");
+        if (requestText != null) {
+            webViewData += "<li>" + requestText + "</li>";
+        }
+
+        String attachments = bundle.getString("workAttachments");
+        if (attachments != null) {
+            webViewData += "<li>" + attachments + "</li>";
+        }
+
+        webViewData += "</ul></body></html>";
+
+        int contentId = getResources().getIdentifier("textContent", "id", getPackageName());
+        WebView contentText = view.findViewById(contentId);
+
+        WebSettings webSettings = contentText.getSettings();
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(false);
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+
+        contentText.loadData(webViewData, "text/html", "UTF-8");
 
         contentText.setOnTouchListener(new View.OnTouchListener() {
             private float startX;
@@ -166,8 +216,7 @@ public class OverlayActivity extends Activity {
                         float endY = event.getY();
                         long endTime = System.currentTimeMillis();
 
-                        if (isClick(startX, startY, endX, endY)
-                                || (endTime - startTime < CLICK_TIME_THRESHOLD)) {
+                        if (endTime - startTime < CLICK_TIME_THRESHOLD) {
                             bundle.putString("link", "/orders/view/" + bundle.getString("workId"));
                             startActivity(bundle);
                             return true;
@@ -207,18 +256,6 @@ public class OverlayActivity extends Activity {
                 Log.d(TAG, "Button Cancel clicked");
 
                 finish();
-            }
-        });
-
-        int alarmId = getResources().getIdentifier("buttonAlarm", "id", getPackageName());
-        ImageButton buttonAlarm = view.findViewById(alarmId);
-        buttonAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Button Cancel clicked");
-
-                bundle.putString("link", "/alarms");
-                startActivity(bundle);
             }
         });
 
