@@ -54,11 +54,11 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		<resource-file src="src/android/dialog_bg.xml" target="res/drawable/dialog_bg.xml" />
 		<resource-file src="src/android/ic_clear_white_24dp.xml" target="res/drawable/ic_clear_white_24dp.xml" />
 		<resource-file src="src/android/ic_notifications_white_24dp.xml" target="res/drawable/ic_notifications_white_24dp.xml" />
-		<resource-file src="src/android/res/drawable-hdpi/ic_bullet_triangle.png" target="res/drawable/drawable-hdpi/ic_bullet_triangle.png" />
-		<resource-file src="src/android/res/drawable-mdpi/ic_bullet_triangle.png" target="res/drawable/drawable-mdpi/ic_bullet_triangle.png" />
-		<resource-file src="src/android/res/drawable-xhdpi/ic_bullet_triangle.png" target="res/drawable/drawable-xhdpi/ic_bullet_triangle.png" />
-		<resource-file src="src/android/res/drawable-xxhdpi/ic_bullet_triangle.png" target="res/drawable/drawable-xxhdpi/ic_bullet_triangle.png" />
-		<resource-file src="src/android/res/drawable-xxxhdpi/ic_bullet_triangle.png" target="res/drawable/drawable-xxxhdpi/ic_bullet_triangle.png" />
+		<resource-file src="src/android/res/drawable-hdpi/ic_bullet_triangle.png" target="res/drawable-hdpi/ic_bullet_triangle.png" />
+		<resource-file src="src/android/res/drawable-mdpi/ic_bullet_triangle.png" target="res/drawable-mdpi/ic_bullet_triangle.png" />
+		<resource-file src="src/android/res/drawable-xhdpi/ic_bullet_triangle.png" target="res/drawable-xhdpi/ic_bullet_triangle.png" />
+		<resource-file src="src/android/res/drawable-xxhdpi/ic_bullet_triangle.png" target="res/drawable-xxhdpi/ic_bullet_triangle.png" />
+		<resource-file src="src/android/res/drawable-xxxhdpi/ic_bullet_triangle.png" target="res/drawable-xxxhdpi/ic_bullet_triangle.png" />
 		<resource-file src="src/android/noto_sans.xml" target="res/font/noto_sans.xml" />
 		<resource-file src="src/android/noto_sans_kr_bold.otf" target="res/font/noto_sans_kr_bold.otf" />
 		<resource-file src="src/android/noto_sans_kr_regular.otf" target="res/font/noto_sans_kr_regular.otf" />
