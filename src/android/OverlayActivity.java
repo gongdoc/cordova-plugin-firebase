@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -87,71 +89,17 @@ public class OverlayActivity extends Activity {
         int titleId = getResources().getIdentifier("textTitle", "id", getPackageName());
         TextView titleText = view.findViewById(titleId);
         titleText.setText(bundle.getString("workAddress"));
-/*
-        int contentId = getResources().getIdentifier("textContent", "id", getPackageName());
-        TextView contentText = view.findViewById(contentId);
 
-        String contentHead = bundle.getString("workType") + "(" + bundle.getString("workEquipments") + ")\n";
-
-        ArrayList<String> contentBody = new ArrayList<String>();
-        ArrayList<Integer> contentBodySize = new ArrayList<Integer>();
-
-        String workDate = bundle.getString("workDate") + "\n";
-        contentBody.add(workDate);
-        contentBodySize.add(workDate.length());
-
-        String workPayTime = bundle.getString("workPayTime") + "\n";
-        contentBody.add(workPayTime);
-        contentBodySize.add(workPayTime.length());
-
-        String payPerDay = bundle.getString("workPayPerDay");
-        if (payPerDay != null) {
-            contentBody.add(payPerDay + "\n");
-            contentBodySize.add(payPerDay.length() + 1);
-        }
-
-        String pickupPosition = bundle.getString("workPickupPosition");
-        if (pickupPosition != null) {
-            contentBody.add(pickupPosition + "\n");
-            contentBodySize.add(pickupPosition.length() + 1);
-        }
-
-        String requestText = bundle.getString("workRequestText");
-        if (requestText != null) {
-            contentBody.add(requestText + "\n");
-            contentBodySize.add(requestText.length() + 1);
-        }
-
-        String attachments = bundle.getString("workAttachments");
-        if (attachments != null) {
-            contentBody.add(attachments + "\n");
-            contentBodySize.add(attachments.length() + 1);
-        }
-
-        String contentAll = contentHead;
-        for (String item: contentBody) {
-            contentAll = contentAll.concat(item);
-        }
-
-        SpannableString contentSpan = new SpannableString(contentAll);
-        contentSpan.setSpan(
-                new TextAppearanceSpan(null, 0, 100, null, null),
-                0, contentHead.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        Integer pos = contentHead.length();
-        for (Integer item: contentBodySize) {
-            contentSpan.setSpan(new BulletSpan(30), pos, pos + item, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            pos += item;
-        }
-
-        contentText.setText(contentSpan, TextView.BufferType.SPANNABLE);
-        contentText.setMovementMethod(new ScrollingMovementMethod());
-*/
-        String webViewStyle = "h3 { margin:0;margin-bottom:10px;font-size: 1.5em; }"
-                + "ul { margin:0;padding:0 0 0 10px; }"
-                + "li { margin-left:20px;color:#666;font-size:1.2em;line-height:1.5; }";
-        String webViewData = "<html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes\"><style>"
-                + webViewStyle + "</style></head><body>";
+        String webViewStyle = "@font-face { font-family: noto_sans; src: url('font/noto_sans_kr_regular.otf'); }\n"
+                + "body { font-family: noto_sans, sans-serif; }"
+                + "h3 { margin:0;margin-bottom:10px;font-size: 1.5em; }\n"
+                + "ul { margin:0;padding:0 0 0 10px; list-style: none; }\n"
+                + "li { padding-left:20px;color:#666;font-size:1.2em;line-height:1.5; background: url('drawable/ic_bullet_triangle.png') no-repeat 0 5px; background-size: 20px; }\n";
+        String webViewData = "<html><head>"
+                + "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes\">"
+                + "<style type=\"text/css\">"
+                + webViewStyle
+                + "</style></head><body>";
 
         webViewData += "<h3>" + bundle.getString("workType") + "(" + bundle.getString("workEquipments") + ")</h3>";
 
@@ -193,12 +141,9 @@ public class OverlayActivity extends Activity {
         webSettings.setDomStorageEnabled(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
 
-        contentText.loadData(webViewData, "text/html", "UTF-8");
+        contentText.loadDataWithBaseURL("file:///android_res/", webViewData, "text/html", "UTF-8", null);
 
         contentText.setOnTouchListener(new View.OnTouchListener() {
-            private float startX;
-            private float startY;
-            private int CLICK_DIFF_THRESHOLD = 200;
             private long startTime;
             private int CLICK_TIME_THRESHOLD = 100;
 
@@ -206,14 +151,10 @@ public class OverlayActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        startX = event.getX();
-                        startY = event.getY();
                         startTime = System.currentTimeMillis();
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        float endX = event.getX();
-                        float endY = event.getY();
                         long endTime = System.currentTimeMillis();
 
                         if (endTime - startTime < CLICK_TIME_THRESHOLD) {
@@ -226,13 +167,6 @@ public class OverlayActivity extends Activity {
                 }
 
                 return false;
-            }
-
-            private boolean isClick(float x1, float y1, float x2, float y2) {
-                float diffX = Math.abs(x1 - x2);
-                float diffY = Math.abs(y1 - y2);
-
-                return !(diffX > CLICK_DIFF_THRESHOLD || diffY > CLICK_DIFF_THRESHOLD);
             }
         });
 
@@ -285,7 +219,6 @@ public class OverlayActivity extends Activity {
 
         super.onDestroy();
     }
-
 
     private void startActivity(Bundle data) {
         final String packageName = "kr.co.gongdoc.mobile";
