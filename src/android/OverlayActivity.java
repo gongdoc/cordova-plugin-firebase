@@ -5,22 +5,12 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.ScrollingMovementMethod;
-import android.text.style.BulletSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -34,12 +24,11 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 public class OverlayActivity extends Activity {
 
     private static final String TAG = OverlayActivity.class.getSimpleName();
+
+    private int CLICK_TIME_THRESHOLD = 100;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -57,12 +46,12 @@ public class OverlayActivity extends Activity {
         view.setTag(TAG);
 
         Drawable background = view.getBackground();
-        background.setAlpha(208);
+        background.setAlpha(128);
 
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                finish();
+                exit();
                 return true;
             }
         });
@@ -78,7 +67,7 @@ public class OverlayActivity extends Activity {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    finish();
+                    exit();
                     return true;
                 } else {
                     return false;
@@ -91,7 +80,7 @@ public class OverlayActivity extends Activity {
         titleText.setText(bundle.getString("workAddress"));
 
         String webViewStyle = "@font-face { font-family: noto_sans; src: url('font/noto_sans_kr_regular.otf'); }\n"
-                + "body { font-family: noto_sans, sans-serif; }"
+                + "body { padding: 10px; font-family: noto_sans, sans-serif; }"
                 + "h3 { margin:0;margin-bottom:10px;font-size: 1.5em; }\n"
                 + "ul { margin:0;padding:0 0 0 10px; list-style: none; }\n"
                 + "li { padding-left:20px;color:#666;font-size:1.2em;line-height:1.5; background: url('drawable/ic_bullet_triangle.png') no-repeat 0 5px; background-size: 20px; }\n";
@@ -145,7 +134,6 @@ public class OverlayActivity extends Activity {
 
         contentText.setOnTouchListener(new View.OnTouchListener() {
             private long startTime;
-            private int CLICK_TIME_THRESHOLD = 100;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -172,24 +160,57 @@ public class OverlayActivity extends Activity {
 
         int okId = getResources().getIdentifier("buttonOk", "id", getPackageName());
         Button buttonOk = view.findViewById(okId);
-        buttonOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Button OK clicked");
+        buttonOk.setOnTouchListener(new View.OnTouchListener() {
+            private long startTime;
 
-                bundle.putString("link", "/my-order-bids/new/" + bundle.getString("workId"));
-                startActivity(bundle);
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startTime = System.currentTimeMillis();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        long endTime = System.currentTimeMillis();
+
+                        if (endTime - startTime < CLICK_TIME_THRESHOLD) {
+                            bundle.putString("link", "/my-order-bids/new/" + bundle.getString("workId"));
+                            startActivity(bundle);
+                            return true;
+                        }
+                        break;
+
+                }
+
+                return false;
             }
         });
 
+
         int cancelId = getResources().getIdentifier("buttonCancel", "id", getPackageName());
         ImageButton buttonCancel = view.findViewById(cancelId);
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Button Cancel clicked");
+        buttonCancel.setOnTouchListener(new View.OnTouchListener() {
+            private long startTime;
 
-                finish();
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startTime = System.currentTimeMillis();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        long endTime = System.currentTimeMillis();
+
+                        if (endTime - startTime < CLICK_TIME_THRESHOLD) {
+                            exit();
+                            return true;
+                        }
+                        break;
+
+                }
+
+                return false;
             }
         });
 
@@ -226,13 +247,28 @@ public class OverlayActivity extends Activity {
 
         Intent intent = new Intent("android.intent.action.MAIN");
         intent.setComponent(new ComponentName(packageName, packageName + "." + className));
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         FirebasePlugin.sendNotification(data, getApplicationContext());
         intent.putExtras(data);
 
-        finish();
         startActivity(intent);
     }
 
+    private void exit() {
+        final String packageName = "kr.co.gongdoc.mobile";
+        final String className = "MainActivity";
+
+        Intent intent = new Intent("android.intent.action.MAIN");
+        intent.setComponent(new ComponentName(packageName, packageName + "." + className));
+
+        intent.addCategory( Intent.CATEGORY_HOME );
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("cdvStartInBackground", true);
+        intent.putExtras(bundle);
+
+        startActivity(intent);
+    }
 }
