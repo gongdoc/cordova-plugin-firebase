@@ -3,15 +3,10 @@ package org.apache.cordova.firebase;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -213,23 +208,6 @@ public class OverlayActivity extends Activity {
                 return false;
             }
         });
-
-        try {
-            Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            String sound = bundle.getString("sound");
-            if (sound != null) {
-                Log.d(TAG, "sound before path is: " + sound);
-                soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
-                Log.d(TAG, "Parsed sound is: " + soundPath.toString());
-            } else {
-                Log.d(TAG, "Sound was null ");
-            }
-
-            Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), soundPath);
-            ringtone.play();
-        } catch (Exception ex) {
-            Log.d(TAG, "Sound file load failed");
-        }
 
         PushWakeLock.acquireWakeLock(getApplicationContext());
     }
