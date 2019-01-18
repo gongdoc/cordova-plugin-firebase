@@ -23,7 +23,7 @@ public class OverlayActivity extends Activity {
 
     private static final String TAG = OverlayActivity.class.getSimpleName();
 
-    private int CLICK_TIME_THRESHOLD = 100;
+    private int CLICK_TIME_THRESHOLD = 200;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -234,19 +234,6 @@ public class OverlayActivity extends Activity {
     }
 
     private void exit() {
-        final String packageName = "kr.co.gongdoc.mobile";
-        final String className = "MainActivity";
-
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.setComponent(new ComponentName(packageName, packageName + "." + className));
-
-        intent.addCategory( Intent.CATEGORY_HOME );
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("cdvStartInBackground", true);
-        intent.putExtras(bundle);
-
-        startActivity(intent);
+        ExitActivity.exitApp(getApplicationContext(), isTaskRoot());
     }
 }
