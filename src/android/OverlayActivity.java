@@ -53,6 +53,10 @@ public class OverlayActivity extends Activity {
 
         setContentView(view);
 
+        int textBgId = getResources().getIdentifier("textBg", "id", getPackageName());
+        TextView textBg = view.findViewById(textBgId);
+        textBg.setText("알림창 외에 터치하시면\n사라집니다.");
+
         int dialogId = getResources().getIdentifier("dialog", "id", getPackageName());
         RelativeLayout dialog = view.findViewById(dialogId);
 
@@ -74,11 +78,11 @@ public class OverlayActivity extends Activity {
         TextView titleText = view.findViewById(titleId);
         titleText.setText(bundle.getString("workAddress"));
 
-        String webViewStyle = "@font-face { font-family: noto_sans; src: url('font/noto_sans_kr_regular.otf'); }\n"
-                + "body { padding: 10px; font-family: noto_sans, sans-serif; }"
-                + "h3 { margin:0;margin-bottom:10px;font-size: 1.5em; }\n"
-                + "ul { margin:0;padding:0 0 0 10px; list-style: none; }\n"
-                + "li { padding-left:20px;color:#666;font-size:1.2em;line-height:1.5; background: url('drawable/ic_bullet_triangle.png') no-repeat 0 5px; background-size: 20px; }\n";
+        String webViewStyle = "@font-face { font-family:noto_sans;src:url('font/noto_sans_kr_regular.otf'); }\n"
+                + "body { padding:10px;font-family:noto_sans, sans-serif;font-size:16px; }"
+                + "h3 { margin:0;margin-bottom:10px;font-size:1.5em; }\n"
+                + "ul { margin:0;padding:0 0 0 5px;list-style:none; }\n"
+                + "li { padding-left:20px;color:#000;font-size:1.2em;line-height:1.5;background:url('drawable/ic_bullet_triangle.png') no-repeat 0 5px;background-size:20px; }\n";
         String webViewData = "<html><head>"
                 + "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes\">"
                 + "<style type=\"text/css\">"
