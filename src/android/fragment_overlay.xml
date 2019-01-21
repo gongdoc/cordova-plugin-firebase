@@ -90,23 +90,30 @@
             android:includeFontPadding="false" />
     </org.apache.cordova.firebase.RoundedRelativeLayout>
 
-    <TextView
-        android:id="@+id/textBg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="30dp"
-        android:paddingStart="18dp"
-        android:paddingEnd="18dp"
-        android:background="@android:color/transparent"
-        android:gravity="center_horizontal|bottom"
-        android:text="@android:string/untitled"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="20dp"
-        android:fontFamily="@font/noto_sans"
-        android:lineSpacingExtra="0dp"
-        android:includeFontPadding="false" />
+    <RelativeLayout
+        android:id="@+id/textBgContainer"
+        android:layout_below="@+id/dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textBg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="30dp"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:background="@android:color/transparent"
+            android:gravity="center_horizontal|bottom"
+            android:text="@android:string/untitled"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:fontFamily="@font/noto_sans"
+            android:lineSpacingExtra="0dp"
+            android:includeFontPadding="false" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
