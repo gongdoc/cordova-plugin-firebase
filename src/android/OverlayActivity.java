@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -31,6 +32,11 @@ public class OverlayActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         final Bundle bundle = getIntent().getExtras();
+
+        if (bundle.getString("flagWakeUp").equals("X")) {
+            exit();
+            return;
+        }
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
@@ -92,6 +98,7 @@ public class OverlayActivity extends Activity {
         webViewData += "<h3>" + bundle.getString("workType") + "(" + bundle.getString("workEquipments") + ")</h3>";
 
         webViewData += "<ul>";
+        webViewData += "<li>" + bundle.getString("workAddress") + "</li>";
         webViewData += "<li>" + bundle.getString("workDate") + "</li>";
         webViewData += "<li>" + bundle.getString("workPayTime") + "</li>";
         String payPerDay = bundle.getString("workPayPerDay");
@@ -167,10 +174,14 @@ public class OverlayActivity extends Activity {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         startTime = System.currentTimeMillis();
+                        v.getBackground().setColorFilter(0x99999999, PorterDuff.Mode.SRC_ATOP);
+                        v.invalidate();
                         break;
 
                     case MotionEvent.ACTION_UP:
                         long endTime = System.currentTimeMillis();
+                        v.getBackground().clearColorFilter();
+                        v.invalidate();
 
                         if (endTime - startTime < CLICK_TIME_THRESHOLD) {
                             bundle.putString("link", "/my-order-bids/new/" + bundle.getString("workId"));
@@ -196,10 +207,14 @@ public class OverlayActivity extends Activity {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         startTime = System.currentTimeMillis();
+                        v.getBackground().setColorFilter(0x99999999, PorterDuff.Mode.SRC_ATOP);
+                        v.invalidate();
                         break;
 
                     case MotionEvent.ACTION_UP:
                         long endTime = System.currentTimeMillis();
+                        v.getBackground().clearColorFilter();
+                        v.invalidate();
 
                         if (endTime - startTime < CLICK_TIME_THRESHOLD) {
                             exit();
