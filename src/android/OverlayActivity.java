@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -81,8 +82,41 @@ public class OverlayActivity extends Activity {
         });
 
         int titleId = getResources().getIdentifier("textTitle", "id", getPackageName());
-        TextView titleText = view.findViewById(titleId);
+        final TextView titleText = view.findViewById(titleId);
         titleText.setText(bundle.getString("workAddress"));
+
+        titleText.setOnTouchListener(new View.OnTouchListener() {
+            private long startTime;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startTime = System.currentTimeMillis();
+                        ((TextView)v).setTextColor(0xffcccccc);
+                        // v.getBackground().setColorFilter(0xff999999, PorterDuff.Mode.MULTIPLY);
+                        v.invalidate();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        long endTime = System.currentTimeMillis();
+                        //v.getBackground().clearColorFilter();
+                        ((TextView)v).setTextColor(0xffffffff);
+                        v.invalidate();
+
+                        if (endTime - startTime < CLICK_TIME_THRESHOLD) {
+                            bundle.putString("link", "/orders/view/" + bundle.getString("workId"));
+                            startActivity(bundle);
+                            return true;
+                        }
+                        break;
+
+                }
+
+                return false;
+            }
+        });
+
 
         String webViewStyle = "@font-face { font-family:noto_sans;src:url('font/noto_sans_kr_regular.otf'); }\n"
                 + "body { padding:10px;font-family:noto_sans, sans-serif;font-size:16px; }"
@@ -146,10 +180,14 @@ public class OverlayActivity extends Activity {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         startTime = System.currentTimeMillis();
+                        v.setBackgroundColor(0xffeeeeee);
+                        v.invalidate();
                         break;
 
                     case MotionEvent.ACTION_UP:
                         long endTime = System.currentTimeMillis();
+                        v.setBackgroundColor(0xffffffff);
+                        v.invalidate();
 
                         if (endTime - startTime < CLICK_TIME_THRESHOLD) {
                             bundle.putString("link", "/orders/view/" + bundle.getString("workId"));
@@ -174,7 +212,7 @@ public class OverlayActivity extends Activity {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         startTime = System.currentTimeMillis();
-                        v.getBackground().setColorFilter(0x99999999, PorterDuff.Mode.SRC_ATOP);
+                        v.getBackground().setColorFilter(0xff999999, PorterDuff.Mode.DARKEN);
                         v.invalidate();
                         break;
 
