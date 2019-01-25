@@ -26,6 +26,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FirebasePlugin";
 
+    private static String lastId;
+
     /**
      * Get a string from resources without importing the .R package
      *
@@ -112,26 +114,32 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Notification Message Lights: " + lights);
 
         // TODO: Add option to developer to configure if show notification when app on foreground
+        Context context = this.getApplicationContext();
 
         if (flagWakeUp.equals("X")) {
-            Context context = this.getApplicationContext();
+            if (FirebasePluginMessagingService.lastId.equals(id)) {
+                Intent intent = new Intent();
+                intent.setClass(context, OverlayActivity.class);
 
-            Intent intent = new Intent();
-            intent.setClass(context, OverlayActivity.class);
+                Bundle bundle = new Bundle();
+                for (Map.Entry<String, String> entry : data.entrySet()) {
+                    bundle.putString(entry.getKey(), entry.getValue());
+                }
+                intent.putExtras(bundle);
 
-            Bundle bundle = new Bundle();
-            for (Map.Entry<String, String> entry : data.entrySet()) {
-                bundle.putString(entry.getKey(), entry.getValue());
+                startActivity(intent);
             }
-            intent.putExtras(bundle);
 
-            startActivity(intent);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(id.hashCode());
+
             return;
         }
 
-        if (flagWakeUp.equals("Y") && wakeUp != null && wakeUp.equals("Y")) {
-            Context context = this.getApplicationContext();
+        // save id
+        FirebasePluginMessagingService.lastId = id;
 
+        if (flagWakeUp.equals("Y") && wakeUp != null && wakeUp.equals("Y")) {
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -150,7 +158,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                         soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
                     }
 
-                    Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), soundPath);
+                    Ringtone ringtone = RingtoneManager.getRingtone(context, soundPath);
                     ringtone.play();
                 } catch (Exception ex) {
                     Log.d(TAG, "Sound file load failed");
