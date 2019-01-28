@@ -117,7 +117,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         Context context = this.getApplicationContext();
 
         if (flagWakeUp.equals("X")) {
-            if (FirebasePluginMessagingService.lastId.equals(id)) {
+            if (id.equals(FirebasePluginMessagingService.lastId)) {
                 Intent intent = new Intent();
                 intent.setClass(context, OverlayActivity.class);
 
@@ -128,6 +128,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                 intent.putExtras(bundle);
 
                 startActivity(intent);
+
+                FirebasePluginMessagingService.lastId = "";
             }
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

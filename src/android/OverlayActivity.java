@@ -275,6 +275,14 @@ public class OverlayActivity extends Activity {
     protected void onDestroy() {
         PushWakeLock.releaseWakeLock();
 
+        View view;
+        int layoutId = getResources().getIdentifier("fragment_overlay", "layout", getPackageName());
+        view = View.inflate(getApplicationContext(), layoutId, null);
+
+        int contentId = getResources().getIdentifier("textContent", "id", getPackageName());
+        WebView contentText = view.findViewById(contentId);
+        contentText.removeAllViews();
+
         super.onDestroy();
     }
 
