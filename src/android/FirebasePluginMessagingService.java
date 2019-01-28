@@ -136,9 +136,6 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             return;
         }
 
-        // save id
-        FirebasePluginMessagingService.lastId = id;
-
         if (flagWakeUp.equals("Y") && wakeUp != null && wakeUp.equals("Y")) {
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -166,6 +163,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             }
 
             startActivity(intent);
+
 /*
             Intent intent = new Intent(context, OverlayService.class);
             intent.setAction(Intent.ACTION_SCREEN_ON);
@@ -178,6 +176,9 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             context.startService(intent);
 */
+
+            // save id
+            FirebasePluginMessagingService.lastId = id;
         }
 
         if (flagPush.equals("Y")) {
