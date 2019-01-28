@@ -2,7 +2,9 @@ package org.apache.cordova.firebase;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -288,6 +290,11 @@ public class OverlayActivity extends Activity {
         intent.putExtras(data);
 
         startActivity(intent);
+
+        String id = data.getString("id");
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(id.hashCode());
     }
 
     private void exit() {

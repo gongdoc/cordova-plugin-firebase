@@ -183,7 +183,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         if (flagPush.equals("Y")) {
             PushWakeLock.acquireWakeLock(getApplicationContext());
 
-            if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (data != null && !data.isEmpty())) {
+            if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || !data.isEmpty()) {
                 boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
                 sendNotification(id, title, text, data, showNotification, sound, lights);
             }
