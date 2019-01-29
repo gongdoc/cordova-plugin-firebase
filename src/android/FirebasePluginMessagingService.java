@@ -106,6 +106,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         }
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
+        Log.d(TAG, "Notification Message flagWakeUp: " + flagWakeUp);
+        Log.d(TAG, "Notification Message flagPush: " + flagPush);
         Log.d(TAG, "Notification Message id: " + id);
         Log.d(TAG, "Notification Message Title: " + title);
         Log.d(TAG, "Notification Message Body/Text: " + text);
@@ -119,6 +121,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         if (flagWakeUp.equals("X")) {
             if (id.equals(FirebasePluginMessagingService.lastId)) {
                 Intent intent = new Intent();
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setClass(context, OverlayActivity.class);
 
                 Bundle bundle = new Bundle();

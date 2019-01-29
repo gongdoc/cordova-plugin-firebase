@@ -11,6 +11,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,7 +26,7 @@ import android.widget.TextView;
 
 public class OverlayActivity extends Activity {
 
-    private static final String TAG = OverlayActivity.class.getSimpleName();
+    private static final String TAG = "FirebasePlugin";
 
     private int CLICK_TIME_THRESHOLD = 200;
 
@@ -35,7 +36,6 @@ public class OverlayActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         final Bundle bundle = getIntent().getExtras();
-
         if (bundle.getString("flagWakeUp").equals("X")) {
             exit();
             return;
