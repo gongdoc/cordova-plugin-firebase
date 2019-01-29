@@ -35,6 +35,8 @@ public class OverlayActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        PushWakeLock.acquireWakeLock(getApplicationContext());
+
         final Bundle bundle = getIntent().getExtras();
         if (bundle.getString("flagWakeUp").equals("X")) {
             exit();
@@ -207,6 +209,7 @@ public class OverlayActivity extends Activity {
         int okId = getResources().getIdentifier("buttonOk", "id", getPackageName());
         Button buttonOk = view.findViewById(okId);
         buttonOk.setOnTouchListener(new View.OnTouchListener() {
+
             private long startTime;
 
             @Override
@@ -267,14 +270,10 @@ public class OverlayActivity extends Activity {
                 return false;
             }
         });
-
-        PushWakeLock.acquireWakeLock(getApplicationContext());
     }
 
     @Override
     protected void onDestroy() {
-        PushWakeLock.releaseWakeLock();
-
         View view;
         int layoutId = getResources().getIdentifier("fragment_overlay", "layout", getPackageName());
         view = View.inflate(getApplicationContext(), layoutId, null);
@@ -284,6 +283,8 @@ public class OverlayActivity extends Activity {
         contentText.removeAllViews();
 
         super.onDestroy();
+
+        PushWakeLock.releaseWakeLock();
     }
 
     private void startActivity(Bundle data) {

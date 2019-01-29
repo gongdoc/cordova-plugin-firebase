@@ -19,6 +19,7 @@ import android.graphics.Color;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.sql.Time;
 import java.util.Map;
 import java.util.Random;
 
@@ -67,6 +68,12 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             // Don't process the message in this method.
             return;
         }
+
+        Long sentTime = remoteMessage.getSentTime();
+        Log.d(TAG, "Sent at " + sentTime);
+
+        Time time = new Time(System.currentTimeMillis());
+        Log.d(TAG, "Time diff : " + Long.toString(sentTime - time.getTime()));
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
@@ -187,13 +194,11 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             FirebasePluginMessagingService.lastId = id;
         }
 
-        if (flagPush.equals("Y")) {
+        if (flagPush.equals("Y") && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || !data.isEmpty())) {
             PushWakeLock.acquireWakeLock(getApplicationContext());
 
-            if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || !data.isEmpty()) {
-                boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
-                sendNotification(id, title, text, data, showNotification, sound, lights);
-            }
+            boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
+            sendNotification(id, title, text, data, showNotification, sound, lights);
 
             PushWakeLock.releaseWakeLock();
         }
