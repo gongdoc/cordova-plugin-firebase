@@ -303,9 +303,15 @@ public class OverlayActivity extends Activity {
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(id.hashCode());
+
+        finish();
     }
 
     private void exit() {
-        ExitActivity.exitApp(getApplicationContext(), isTaskRoot());
+        if (isTaskRoot()) {
+            ExitActivity.exitApp(getApplicationContext());
+        } else {
+            finish();
+        }
     }
 }
