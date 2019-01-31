@@ -35,13 +35,13 @@ public class OverlayActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PushWakeLock.acquireWakeLock(getApplicationContext());
-
         final Bundle bundle = getIntent().getExtras();
         if (bundle.getString("flagWakeUp").equals("X")) {
             exit();
             return;
         }
+
+        PushWakeLock.acquireWakeLock(getApplicationContext());
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);

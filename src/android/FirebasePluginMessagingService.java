@@ -69,12 +69,6 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             return;
         }
 
-        Long sentTime = remoteMessage.getSentTime();
-        Log.d(TAG, "Sent at " + sentTime);
-
-        Time time = new Time(System.currentTimeMillis());
-        Log.d(TAG, "Time diff : " + Long.toString(sentTime - time.getTime()));
-
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         String flagWakeUp = "";
