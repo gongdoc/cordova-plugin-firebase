@@ -173,6 +173,7 @@ public class OverlayActivity extends Activity {
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+        webSettings.setTextZoom(100);
 
         contentText.loadDataWithBaseURL("file:///android_res/", webViewData, "text/html", "UTF-8", null);
 
