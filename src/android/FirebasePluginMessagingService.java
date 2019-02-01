@@ -9,6 +9,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.app.Notification;
@@ -19,7 +20,6 @@ import android.graphics.Color;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.sql.Time;
 import java.util.Map;
 import java.util.Random;
 
@@ -153,6 +153,14 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             for (Map.Entry<String, String> entry : data.entrySet()) {
                 bundle.putString(entry.getKey(), entry.getValue());
             }
+
+            PowerManager powerManager = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+            if (powerManager.isInteractive()) {
+                bundle.putString("screen", "on");
+            } else {
+                bundle.putString("screen", "off");
+            }
+
             intent.putExtras(bundle);
 
             if (flagPush.equals("N")) {
@@ -232,9 +240,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             }
 
             if (sound != null) {
-                Log.d(TAG, "sound before path is: " + sound);
                 Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
-                Log.d(TAG, "Parsed sound is: " + soundPath.toString());
                 notificationBuilder.setSound(soundPath);
             } else {
                 Log.d(TAG, "Sound was null ");
@@ -256,14 +262,14 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             }
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                int accentID = getResources().getIdentifier("accent", "color", getPackageName());
+                int accentID = getResources().getIdentifier("primary", "color", getPackageName());
                 notificationBuilder.setColor(getResources().getColor(accentID, null));
             }
 
             Notification notification = notificationBuilder.build();
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 int iconID = android.R.id.icon;
-                int notiID = getResources().getIdentifier("notification_big", "drawable", getPackageName());
+                int notiID = getResources().getIdentifier("notification_icon", "drawable", getPackageName());
                 if (notification.contentView != null) {
                     notification.contentView.setImageViewResource(iconID, notiID);
                 }

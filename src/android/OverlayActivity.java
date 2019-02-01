@@ -10,8 +10,10 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,7 +54,11 @@ public class OverlayActivity extends Activity {
         view.setTag(TAG);
 
         Drawable background = view.getBackground();
-        background.setAlpha(128);
+        if (bundle.getString("screen").equals("on")) {
+            background.setAlpha(128);
+        } else {
+            background.setAlpha(255);
+        }
 
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
