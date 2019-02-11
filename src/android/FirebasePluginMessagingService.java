@@ -232,7 +232,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     .setContentIntent(pendingIntent)
                     .setPriority(NotificationCompat.PRIORITY_MAX);
 
-            int resID = getResources().getIdentifier("notification_icon", "drawable", getPackageName());
+            int resID = getResources().getIdentifier("ic_notification", "drawable", getPackageName());
             if (resID != 0) {
                 notificationBuilder.setSmallIcon(resID);
             } else {
@@ -269,7 +269,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             Notification notification = notificationBuilder.build();
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 int iconID = android.R.id.icon;
-                int notiID = getResources().getIdentifier("notification_icon", "drawable", getPackageName());
+                int notiID = getResources().getIdentifier("ic_notification", "drawable", getPackageName());
                 if (notification.contentView != null) {
                     notification.contentView.setImageViewResource(iconID, notiID);
                 }

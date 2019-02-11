@@ -53,7 +53,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		<resource-file src="src/android/themes.xml" target="res/values/themes.xml" />
 		<resource-file src="src/android/fragment_overlay.xml" target="res/layout/fragment_overlay.xml" />
 		<resource-file src="src/android/dialog_bg.xml" target="res/drawable/dialog_bg.xml" />
-		<resource-file src="src/android/notification_icon.xml" target="res/drawable/notification_icon.xml" />
+		<resource-file src="src/android/ic_notification.xml" target="res/drawable/ic_notification.xml" />
 		<resource-file src="src/android/ic_clear_white_24dp.xml" target="res/drawable/ic_clear_white_24dp.xml" />
 		<resource-file src="src/android/ic_notifications_white_24dp.xml" target="res/drawable/ic_notifications_white_24dp.xml" />
 		<resource-file src="src/android/res/drawable-hdpi/ic_bullet_triangle.png" target="res/drawable-hdpi/ic_bullet_triangle.png" />
