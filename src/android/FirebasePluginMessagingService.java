@@ -16,6 +16,7 @@ import android.app.Notification;
 import android.text.TextUtils;
 import android.content.ContentResolver;
 import android.graphics.Color;
+import android.widget.RemoteViews;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -222,11 +223,37 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
+            /*
             notificationBuilder
                     .setContentTitle(title)
                     .setContentText(messageBody)
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_MAX);
+            */
+
+            int contentViewId = getResources().getIdentifier("notification", "layout", getPackageName());
+            RemoteViews contentView = new RemoteViews(getPackageName(), contentViewId);
+
+            int bigContentViewId = getResources().getIdentifier("notification_expanded", "layout", getPackageName());
+            RemoteViews bigContentView = new RemoteViews(getPackageName(), bigContentViewId);
+
+            int titleId = getResources().getIdentifier("notificationTitle", "id", getPackageName());
+            contentView.setTextViewText(titleId, title);
+            bigContentView.setTextViewText(titleId, title);
+
+            int contentId = getResources().getIdentifier("notificationContent", "id", getPackageName());
+            contentView.setTextViewText(contentId, messageBody);
+            bigContentView.setTextViewText(contentId, messageBody);
+
+            notificationBuilder
+                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                    .setCustomContentView(contentView)
+                    .setCustomBigContentView(bigContentView)
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)
                     .setContentIntent(pendingIntent)
