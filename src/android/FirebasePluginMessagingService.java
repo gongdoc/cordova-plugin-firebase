@@ -233,6 +233,13 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     .setSound(defaultSoundUri)
                     .setContentIntent(pendingIntent)
                     .setPriority(NotificationCompat.PRIORITY_MAX);
+
+            int resID = getResources().getIdentifier("ic_notification", "drawable", getPackageName());
+            if (resID != 0) {
+                notificationBuilder.setSmallIcon(resID);
+            } else {
+                notificationBuilder.setSmallIcon(getApplicationInfo().icon);
+            }
             */
 
             int contentViewId = getResources().getIdentifier("notification", "layout", getPackageName());
@@ -240,11 +247,11 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             int bigContentViewId = getResources().getIdentifier("notification_expanded", "layout", getPackageName());
             RemoteViews bigContentView = new RemoteViews(getPackageName(), bigContentViewId);
-
+/*
             int titleId = getResources().getIdentifier("notificationTitle", "id", getPackageName());
             contentView.setTextViewText(titleId, title);
             bigContentView.setTextViewText(titleId, title);
-
+*/
             int contentId = getResources().getIdentifier("notificationContent", "id", getPackageName());
             contentView.setTextViewText(contentId, messageBody);
             bigContentView.setTextViewText(contentId, messageBody);
