@@ -157,3 +157,9 @@ exports.clearAllNotifications = function (success, error) {
     success();
   }
 };
+
+exports.loadNotificationSettings = function (success, error) {
+  if (typeof success === 'function') {
+    success();
+  }
+};
