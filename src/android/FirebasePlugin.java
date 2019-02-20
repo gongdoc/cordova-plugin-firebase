@@ -1,9 +1,11 @@
 package org.apache.cordova.firebase;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.NotificationManagerCompat;
@@ -973,13 +975,23 @@ public class FirebasePlugin extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 try {
-                    Intent intent;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                        intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                    Activity context = cordova.getActivity();
+                    Intent intent = new Intent();
+                    if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.N_MR1) {
+                        intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+                        intent.putExtra("android.provider.extra.APP_PACKAGE", context.getPackageName());
+                    } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+                        intent.putExtra("app_package", context.getPackageName());
+                        intent.putExtra("app_uid", context.getApplicationInfo().uid);
                     } else {
-                        intent = new Intent(Settings.ACTION_APPLICATION_SETTINGS);
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        intent.addCategory(Intent.CATEGORY_DEFAULT);
+                        intent.setData(Uri.parse("package:" + context.getPackageName()));
                     }
-                    cordova.getActivity().startActivity(intent);
+
+                    context.startActivity(intent);
+                    
                     callbackContext.success();
                 } catch (Exception e) {
                     Crashlytics.log(e.getMessage());
