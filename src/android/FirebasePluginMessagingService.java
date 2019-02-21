@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -148,6 +149,9 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         if (flagWakeUp.equals("Y") && wakeUp != null && wakeUp.equals("Y")) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             if (!notificationManagerCompat.areNotificationsEnabled()) return;
+
+            boolean showNotification = (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
+            if (!showNotification) return;
 
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -322,6 +326,16 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             // Since android Oreo notification channel is needed.
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+
+                Uri soundPath = defaultSoundUri;
+                if (sound != null) {
+                    soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
+                }
+                AudioAttributes attributes = new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                        .build();
+                channel.setSound(soundPath, attributes);
+
                 notificationManager.createNotificationChannel(channel);
             }
 
