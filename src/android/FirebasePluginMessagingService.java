@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.app.Notification;
 import android.text.TextUtils;
@@ -145,6 +146,9 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         }
 
         if (flagWakeUp.equals("Y") && wakeUp != null && wakeUp.equals("Y")) {
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+            if (!notificationManagerCompat.areNotificationsEnabled()) return;
+
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -218,6 +222,9 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             intent.putExtras(bundle);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+            String groupId = getPackageName() + ".NOTIFICATIONS";
+            int GROUP_SUMMARY_ID = 0;
+
             String channelId = this.getStringResource("default_notification_channel_id");
             String channelName = this.getStringResource("default_notification_channel_name");
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -258,6 +265,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             notificationBuilder
                     .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                    .setGroup(groupId)
+                    .setGroupSummary(true)
                     .setCustomContentView(contentView)
                     .setCustomBigContentView(bigContentView)
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
