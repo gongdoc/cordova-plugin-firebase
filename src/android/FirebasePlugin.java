@@ -227,6 +227,9 @@ public class FirebasePlugin extends CordovaPlugin {
     public void onDestroy() {
         super.onDestroy();
 
+        // avoid the abnormal exit of the app
+        System.exit(0);
+
         if (this.appView != null) {
             appView.handleDestroy();
         }
