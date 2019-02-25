@@ -11,6 +11,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -181,6 +183,14 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
                     Ringtone ringtone = RingtoneManager.getRingtone(context, soundPath);
                     ringtone.play();
+
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (android.os.Build.VERSION.SDK_INT >= 26) {
+                        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(new long[] { 1000, 1000, 1000 }, -1);
+                    }
+
                 } catch (Exception ex) {
                     Log.d(TAG, "Sound file load failed");
                 }
@@ -233,6 +243,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             String channelName = this.getStringResource("default_notification_channel_name");
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
+            long[] defaultVibration = new long[] { 1000, 1000, 1000 };
+
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
             /*
             notificationBuilder
@@ -258,14 +270,20 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             int bigContentViewId = getResources().getIdentifier("notification_expanded", "layout", getPackageName());
             RemoteViews bigContentView = new RemoteViews(getPackageName(), bigContentViewId);
-/*
+
             int titleId = getResources().getIdentifier("notificationTitle", "id", getPackageName());
-            contentView.setTextViewText(titleId, title);
+            String titleMessage = bundle.getString("workAddress");
+            contentView.setTextViewText(titleId, titleMessage);
+            // bigContentView.setTextViewText(titleId, titleMessage);
+            // contentView.setTextViewText(titleId, title);
             bigContentView.setTextViewText(titleId, title);
-*/
+
             int contentId = getResources().getIdentifier("notificationContent", "id", getPackageName());
-            contentView.setTextViewText(contentId, messageBody);
+            String contentMessage = bundle.getString("workType") + "(" + bundle.getString("workEquipments") + ") - " + bundle.getString("workDate");
+            contentView.setTextViewText(contentId, contentMessage);
             bigContentView.setTextViewText(contentId, messageBody);
+            // contentView.setTextViewText(contentId, messageBody);
+            // bigContentView.setTextViewText(contentId, messageBody);
 
             notificationBuilder
                     .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
@@ -276,6 +294,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)
+                    .setVibrate(defaultVibration)
                     .setContentIntent(pendingIntent)
                     .setPriority(NotificationCompat.PRIORITY_MAX);
 
@@ -286,8 +305,9 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                 notificationBuilder.setSmallIcon(getApplicationInfo().icon);
             }
 
+            Uri soundPath = defaultSoundUri;
             if (sound != null) {
-                Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
+                soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
                 notificationBuilder.setSound(soundPath);
             } else {
                 Log.d(TAG, "Sound was null ");
@@ -327,10 +347,6 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
 
-                Uri soundPath = defaultSoundUri;
-                if (sound != null) {
-                    soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
-                }
                 AudioAttributes attributes = new AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                         .build();
