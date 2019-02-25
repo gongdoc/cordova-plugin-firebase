@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -143,7 +144,9 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             }
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(id.hashCode());
+            if (notificationManager != null) {
+                notificationManager.cancel(id.hashCode());
+            }
 
             return;
         }
@@ -166,7 +169,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             }
 
             PowerManager powerManager = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
-            if (powerManager.isInteractive()) {
+            if (powerManager != null && powerManager.isInteractive()) {
                 bundle.putString("screen", "on");
             } else {
                 bundle.putString("screen", "off");
@@ -176,21 +179,31 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             if (flagPush.equals("N")) {
                 try {
-                    Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    if (sound != null) {
-                        soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
+                    AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+                    if (audioManager != null) {
+                        int ringerMode = audioManager.getRingerMode();
+                        if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
+                            Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            if (sound != null) {
+                                soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
+                            }
+
+                            Ringtone ringtone = RingtoneManager.getRingtone(context, soundPath);
+                            ringtone.play();
+                        }
+
+                        if (ringerMode == AudioManager.RINGER_MODE_NORMAL || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
+                            long[] defaultVibration = new long[] { 0, 1000, 1000, 1000, 1000 };
+                            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            if (vibrator != null && vibrator.hasVibrator()) {
+                                if (android.os.Build.VERSION.SDK_INT >= 26) {
+                                    vibrator.vibrate(VibrationEffect.createWaveform(defaultVibration, -1));
+                                } else {
+                                    vibrator.vibrate(defaultVibration, -1);
+                                }
+                            }
+                        }
                     }
-
-                    Ringtone ringtone = RingtoneManager.getRingtone(context, soundPath);
-                    ringtone.play();
-
-                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                    if (android.os.Build.VERSION.SDK_INT >= 26) {
-                        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(new long[] { 1000, 1000, 1000 }, -1);
-                    }
-
                 } catch (Exception ex) {
                     Log.d(TAG, "Sound file load failed");
                 }
@@ -243,7 +256,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             String channelName = this.getStringResource("default_notification_channel_name");
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-            long[] defaultVibration = new long[] { 1000, 1000, 1000 };
+            long[] defaultVibration = new long[] { 0, 1000, 1000, 1000, 1000 };
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
             /*
@@ -342,20 +355,26 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                 }
             }
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                // Since android Oreo notification channel is needed.
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
 
-            // Since android Oreo notification channel is needed.
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+                    AudioAttributes attributes = new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                            .build();
+                    channel.setSound(soundPath, attributes);
 
-                AudioAttributes attributes = new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                        .build();
-                channel.setSound(soundPath, attributes);
+                    notificationManager.createNotificationChannel(channel);
+                }
 
-                notificationManager.createNotificationChannel(channel);
+                if (android.os.Build.VERSION.SDK_INT >= 26) {
+                    NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+                    channel.setVibrationPattern(defaultVibration);
+                }
+
+                notificationManager.notify(id.hashCode(), notification);
             }
-
-            notificationManager.notify(id.hashCode(), notification);
         } else {
             bundle.putBoolean("tap", false);
             bundle.putString("title", title);
