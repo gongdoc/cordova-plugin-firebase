@@ -210,7 +210,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                         }
 
                         if (ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
-                            long[] defaultVibration = new long[] { 0, 300, 300, 300, 300 };
+                            long[] defaultVibration = new long[] { 0, 270, 200, 270, 200 };
                             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                             if (vibrator != null && vibrator.hasVibrator()) {
                                 if (android.os.Build.VERSION.SDK_INT >= 26) {
@@ -363,7 +363,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                 notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
             }
 
-            long[] defaultVibration = new long[] { 0, 300, 300, 300, 300 };
+            long[] defaultVibration = new long[] { 0, 270, 200, 270, 200 };
             AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
             if (audioManager != null) {
                 int ringerMode = audioManager.getRingerMode();
