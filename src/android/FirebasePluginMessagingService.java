@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
-import android.media.Ringtone;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -184,16 +184,28 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                         int ringerMode = audioManager.getRingerMode();
                         if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
                             Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                            int volume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
+
                             if (sound != null) {
                                 soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
                             }
 
-                            Ringtone ringtone = RingtoneManager.getRingtone(context, soundPath);
-                            ringtone.play();
+                            final MediaPlayer mediaPlayer = new MediaPlayer();
+                            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                            mediaPlayer.setDataSource(getApplicationContext(), soundPath);
+                            mediaPlayer.prepare();
+                            mediaPlayer.start();
+                            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                public void onCompletion(MediaPlayer mp) {
+                                    mediaPlayer.release();
+                                }
+                            });
                         }
 
                         if (ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
-                            long[] defaultVibration = new long[] { 0, 1000, 1000, 1000, 1000 };
+                            long[] defaultVibration = new long[] { 0, 300, 300, 300, 300 };
                             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                             if (vibrator != null && vibrator.hasVibrator()) {
                                 if (android.os.Build.VERSION.SDK_INT >= 26) {
@@ -250,7 +262,6 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             String groupId = getPackageName() + ".NOTIFICATIONS";
-            int GROUP_SUMMARY_ID = 0;
 
             String channelId = this.getStringResource("default_notification_channel_id");
             String channelName = this.getStringResource("default_notification_channel_name");
@@ -347,7 +358,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                 notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
             }
 
-            long[] defaultVibration = new long[] { 0, 1000, 1000, 1000, 1000 };
+            long[] defaultVibration = new long[] { 0, 300, 300, 300, 300 };
             AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
             if (audioManager != null) {
                 int ringerMode = audioManager.getRingerMode();
