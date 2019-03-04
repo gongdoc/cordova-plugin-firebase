@@ -179,18 +179,22 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             if (flagPush.equals("N")) {
                 try {
-                    AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+                    final AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
                     if (audioManager != null) {
                         int ringerMode = audioManager.getRingerMode();
                         if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
-                            Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-                            int volume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
-                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
-
+                            Uri soundPath = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
                             if (sound != null) {
                                 soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
                             }
+
+                            final int maxVolumeMusic = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                            final int volumeMusic = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                            int maxVolumeNotification = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
+                            int volumeNotification = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+
+                            int volume = volumeNotification * maxVolumeMusic / maxVolumeNotification;
+                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
 
                             final MediaPlayer mediaPlayer = new MediaPlayer();
                             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -200,6 +204,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                                 public void onCompletion(MediaPlayer mp) {
                                     mediaPlayer.release();
+                                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeMusic, 0);
                                 }
                             });
                         }
