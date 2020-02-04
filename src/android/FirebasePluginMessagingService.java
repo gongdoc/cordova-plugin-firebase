@@ -246,10 +246,14 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         }
 
         if (flagPush.equals("Y") && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || !data.isEmpty())) {
+            Log.d(TAG, "Byzin FPMS 249");
             PushWakeLock.acquireWakeLock(getApplicationContext());
+            Log.d(TAG, "Byzin FPMS 251");
 
             boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
             sendNotification(id, title, text, data, showNotification, sound, lights);
+
+            Log.d(TAG, "Byzin FPMS 256");
 
             PushWakeLock.releaseWakeLock();
         }
