@@ -1,5 +1,6 @@
 package org.apache.cordova.firebase;
 
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -76,6 +77,11 @@ public class OverlayService extends Service {
     private BroadcastReceiver overlayReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            // int notificationId = intent.getIntExtra("notificationId", 0);
+            // Log.d(TAG, "BroadcastReceiver " + notificationId);
+            // NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            // manager.cancel(notificationId);
+            
             String action = intent.getAction();
 
             Bundle data = intent.getExtras();

@@ -29,6 +29,8 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 				<uses-permission android:name="android.permission.WAKE_LOCK" />
         <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
         <uses-permission android:name="android.permission.VIBRATE" />
+				<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+				<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 		</config-file>
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<service android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementService" />
@@ -48,6 +50,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 			</service>
       <service android:name="org.apache.cordova.firebase.OverlayService" />
 			<receiver android:name="org.apache.cordova.firebase.OnNotificationOpenReceiver"></receiver>
+			<receiver android:name="org.apache.cordova.firebase.OnNotificationDismissReceiver"></receiver>
 		</config-file>
 		<resource-file src="src/android/google-services.json" target="."/>
 		<resource-file src="src/android/cordova-plugin-firebase-strings.xml" target="res/values/cordova-plugin-firebase-strings.xml" />
@@ -55,6 +58,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		<resource-file src="src/android/fragment_overlay.xml" target="res/layout/fragment_overlay.xml" />
 		<resource-file src="src/android/notification.xml" target="res/layout/notification.xml" />
 		<resource-file src="src/android/notification_expanded.xml" target="res/layout/notification_expanded.xml" />
+		<resource-file src="src/android/notification_button.xml" target="res/layout/notification_button.xml" />
 		<resource-file src="src/android/dialog_bg.xml" target="res/drawable/dialog_bg.xml" />
 		<resource-file src="src/android/ic_notification.xml" target="res/drawable/ic_notification.xml" />
 		<resource-file src="src/android/ic_clear_white_24dp.xml" target="res/drawable/ic_clear_white_24dp.xml" />
@@ -69,6 +73,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 		<resource-file src="src/android/noto_sans_kr_regular.otf" target="res/font/noto_sans_kr_regular.otf" />
 		<source-file src="src/android/FirebasePlugin.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/OnNotificationOpenReceiver.java" target-dir="src/org/apache/cordova/firebase" />
+		<source-file src="src/android/OnNotificationDismissReceiver.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/FirebasePluginInstanceIDService.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/FirebasePluginMessagingService.java" target-dir="src/org/apache/cordova/firebase" />
 		<source-file src="src/android/FirebasePluginMessageReceiver.java" target-dir="src/org/apache/cordova/firebase" />

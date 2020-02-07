@@ -202,6 +202,12 @@ public class FirebasePlugin extends CordovaPlugin {
         } else if (action.equals("loadNotificationSettings")) {
             this.loadNotificationSettings(callbackContext);
             return true;
+        } else if (action.equals("loadOverlaySettings")) {
+            this.loadOverlaySettings(callbackContext);
+            return true;
+        } else if (action.equals("hasOverlayPermission")) {
+            this.hasOverlayPermission(callbackContext);
+            return true;
         }
 
         return false;
@@ -998,6 +1004,53 @@ public class FirebasePlugin extends CordovaPlugin {
                     callbackContext.success();
                 } catch (Exception e) {
                     Crashlytics.log(e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void loadOverlaySettings(final CallbackContext callbackContext) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                try {
+                    Activity context = cordova.getActivity();
+                    Intent intent = new Intent();
+                    
+                    if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.M) {
+                        if (!Settings.canDrawOverlays(context)) {
+                            intent.setAction("android.settings.action.MANAGE_OVERLAY_PERMISSION");
+                            intent.setData(Uri.parse("package:" + context.getPackageName()));
+                        }
+                    } else {
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        intent.addCategory(Intent.CATEGORY_DEFAULT);
+                        intent.setData(Uri.parse("package:" + context.getPackageName()));
+                    }
+
+                    context.startActivity(intent);
+                    
+                    callbackContext.success();
+                } catch (Exception e) {
+                    Crashlytics.log(e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void hasOverlayPermission(final CallbackContext callbackContext) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                try {
+                    Context context = cordova.getActivity();
+                    boolean areOverlayEnabled = Settings.canDrawOverlays(context);
+                    if (android.os.Build.VERSION.SDK_INT < 29) //android.os.Build.VERSION_CODES.Q
+                        areOverlayEnabled = true;
+                    JSONObject object = new JSONObject();
+                    object.put("isEnabled", areOverlayEnabled);
+                    callbackContext.success(object);
+                } catch (Exception e) {
+                    Crashlytics.logException(e);
+                    callbackContext.error(e.getMessage());
                 }
             }
         });

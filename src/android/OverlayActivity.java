@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;

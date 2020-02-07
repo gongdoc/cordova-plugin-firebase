@@ -163,3 +163,16 @@ exports.loadNotificationSettings = function (success, error) {
     success();
   }
 };
+
+exports.loadOverlaySettings = function (success, error) {
+  if (typeof success === 'function') {
+    success();
+  }
+};
+
+
+exports.hasOverlayPermission = function (success, error) {
+  if (typeof success === 'function') {
+    success();
+  }
+};

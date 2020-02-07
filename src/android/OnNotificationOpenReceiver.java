@@ -1,5 +1,6 @@
 package org.apache.cordova.firebase;
 
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,5 +24,9 @@ public class OnNotificationOpenReceiver extends BroadcastReceiver {
 
         launchIntent.putExtras(data);
         context.startActivity(launchIntent);
+
+        int notificationId = intent.getIntExtra("notificationId", 0);
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(notificationId);
     }
 }

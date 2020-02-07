@@ -11,6 +11,13 @@ public class PushWakeLock {
 
     public static void acquireWakeLock(Context context) {
         synchronized (PushWakeLock.class) {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+
+            if (wakeLock == null) {
+                wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+                                | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
+            }
+
             if (wakeLock != null) {
                 // Lock을 Acquire한 상태라면
                 if (wakeLock.isHeld()) {
@@ -22,8 +29,7 @@ public class PushWakeLock {
                 }
                 wakeLock = null;
             }
-
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            
             wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
                             | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
         }

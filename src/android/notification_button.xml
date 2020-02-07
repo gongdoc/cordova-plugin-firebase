@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView
+        android:id="@+id/notificationTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="58dp"
+        android:fontFamily="@font/noto_sans"
+        android:lineSpacingExtra="6sp"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/notificationContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notificationTitle"
+        android:layout_marginEnd="58dp"
+        android:fontFamily="@font/noto_sans"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:src="@mipmap/icon"
+        android:id="@+id/notificationIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notificationContent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/notificationDecline"
+            android:layout_width="0dp" android:layout_weight="10" 
+            android:layout_height="55dp"
+            android:textColor="#6b6b6b"
+            android:background="#e6e6e6"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="취소" />
+    
+        <Button
+            android:id="@+id/notificationAccept"
+            android:layout_width="0dp" android:layout_weight="10" 
+            android:layout_height="55dp"
+            android:textColor="#ffffff"
+            android:background="#2196f3"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="확인" />
+
+    </LinearLayout>
+</RelativeLayout>

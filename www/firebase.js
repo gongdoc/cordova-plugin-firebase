@@ -171,3 +171,11 @@ exports.clearAllNotifications = function (success, error) {
 exports.loadNotificationSettings = function (success, error) {
   exec(success, error, "FirebasePlugin", "loadNotificationSettings", []);
 };
+
+exports.loadOverlaySettings = function (success, error) {
+  exec(success, error, "FirebasePlugin", "loadOverlaySettings", []);
+};
+
+exports.hasOverlayPermission = function (success, error) {
+  exec(success, error, "FirebasePlugin", "hasOverlayPermission", []);
+};
