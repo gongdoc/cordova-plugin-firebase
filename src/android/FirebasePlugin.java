@@ -1041,10 +1041,12 @@ public class FirebasePlugin extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 try {
-                    Context context = cordova.getActivity();
-                    boolean areOverlayEnabled = Settings.canDrawOverlays(context);
-                    if (android.os.Build.VERSION.SDK_INT < 29) //android.os.Build.VERSION_CODES.Q
-                        areOverlayEnabled = true;
+                    boolean areOverlayEnabled = true;
+                    if (android.os.Build.VERSION.SDK_INT >= 29){
+                        Context context = cordova.getActivity();
+                        areOverlayEnabled = Settings.canDrawOverlays(context);
+                    }
+                    
                     JSONObject object = new JSONObject();
                     object.put("isEnabled", areOverlayEnabled);
                     callbackContext.success(object);
