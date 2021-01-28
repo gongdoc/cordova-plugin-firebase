@@ -269,7 +269,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             String channelId = this.getStringResource("default_notification_channel_id");
             String channelName = this.getStringResource("default_notification_channel_name");
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            // Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri defaultSoundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc.mp3");
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
             /*
@@ -391,7 +392,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     if (sound != null) {
                         channel.setSound(soundPath, attributes);
                     } else {
-                        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        // Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc.mp3");
                         channel.setSound(uri, attributes);
                     }
 
