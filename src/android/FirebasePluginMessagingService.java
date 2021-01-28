@@ -359,7 +359,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                 notificationBuilder.setSound(soundPath);
             } else {
                 Log.d(TAG, "Sound was null ");
-                notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
+                // notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
+                notificationBuilder.setSound(soundPath);
             }
 
             long[] defaultVibration = new long[] { 0, 280, 250, 280, 250 };
@@ -384,7 +385,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             if (notificationManager != null) {
                 // Since android Oreo notification channel is needed.
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+                    NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManagerㅅIMPORTANCE_HIGH);
 
                     AudioAttributes attributes = new AudioAttributes.Builder()
                             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
