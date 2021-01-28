@@ -390,13 +390,14 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     AudioAttributes attributes = new AudioAttributes.Builder()
                             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                             .build();
-                    if (sound != null) {
-                        channel.setSound(soundPath, attributes);
-                    } else {
-                        // Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
-                        channel.setSound(uri, attributes);
-                    }
+                    channel.setSound(soundPath, attributes);
+                    // if (sound != null) {
+                    //     channel.setSound(soundPath, attributes);
+                    // } else {
+                    //     // Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    //     Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
+                    //     channel.setSound(uri, attributes);
+                    // }
 
                     notificationManager.createNotificationChannel(channel);
                 }

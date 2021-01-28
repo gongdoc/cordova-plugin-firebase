@@ -227,15 +227,17 @@ public class OverlayService extends Service {
         }
 
         try {
-            Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            // Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
             String sound = bundle.getString("sound");
-            if (sound != null) {
-                Log.d(TAG, "sound before path is: " + sound);
-                soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
-                Log.d(TAG, "Parsed sound is: " + soundPath.toString());
-            } else {
-                Log.d(TAG, "Sound was null ");
-            }
+            // if (sound != null) {
+            //     Log.d(TAG, "sound before path is: " + sound);
+            //     // soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
+            //     soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
+            //     Log.d(TAG, "Parsed sound is: " + soundPath.toString());
+            // } else {
+            //     Log.d(TAG, "Sound was null ");
+            // }
 
             Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), soundPath);
             ringtone.play();
