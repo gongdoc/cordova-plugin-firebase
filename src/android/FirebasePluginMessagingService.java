@@ -355,7 +355,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             Uri soundPath = defaultSoundUri;
             if (sound != null) {
-                soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
+                // soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
                 notificationBuilder.setSound(soundPath);
             } else {
                 Log.d(TAG, "Sound was null ");
