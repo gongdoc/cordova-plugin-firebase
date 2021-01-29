@@ -227,7 +227,7 @@ public class OverlayService extends Service {
         }
 
         try {
-            Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc.mp3");
+            Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
             Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), soundPath);
             ringtone.play();
         } catch (Exception ex) {
