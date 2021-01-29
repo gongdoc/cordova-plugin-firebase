@@ -322,7 +322,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)
-                    .setVibrate(defaultVibration)
+                    // .setVibrate(defaultVibration)
                     .setContentIntent(pendingIntent)
                     .setPriority(NotificationCompat.PRIORITY_MAX);
 
