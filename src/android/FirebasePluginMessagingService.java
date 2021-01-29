@@ -183,7 +183,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     if (audioManager != null) {
                         int ringerMode = audioManager.getRingerMode();
                         if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
-                            Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
+                            Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                            // Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
 
                             final int maxVolumeMusic = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
                             final int volumeMusic = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -266,7 +267,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             String channelId = this.getStringResource("default_notification_channel_id");
             String channelName = this.getStringResource("default_notification_channel_name");
             // Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Uri defaultSoundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            // Uri defaultSoundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
 
@@ -333,14 +335,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             }
 
             Uri soundPath = defaultSoundUri;
-            if (sound != null) {
-                // soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
-                notificationBuilder.setSound(soundPath);
-            } else {
-                Log.d(TAG, "Sound was null ");
-                // notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
-                notificationBuilder.setSound(soundPath);
-            }
+            notificationBuilder.setSound(soundPath);
 
             long[] defaultVibration = new long[] { 0, 280, 250, 280, 250 };
             AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
@@ -370,16 +365,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                         .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                         .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                         .build();
-                        
-                    channel.setSound(soundPath, attributes);
-                    // if (sound != null) {
-                    //     channel.setSound(soundPath, attributes);
-                    // } else {
-                    //     // Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    //     Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
-                    //     channel.setSound(uri, attributes);
-                    // }
 
+                    channel.setSound(soundPath, attributes);
                     notificationManager.createNotificationChannel(channel);
                 }
 
