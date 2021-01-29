@@ -177,52 +177,52 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             intent.putExtras(bundle);
 
-            if (flagPush.equals("N")) {
-                try {
-                    final AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-                    if (audioManager != null) {
-                        int ringerMode = audioManager.getRingerMode();
-                        if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
-                            Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-                            // Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
+            // if (flagPush.equals("N")) {
+            //     try {
+            //         final AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+            //         if (audioManager != null) {
+            //             int ringerMode = audioManager.getRingerMode();
+            //             if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
+            //                 Uri soundPath = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            //                 // Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
 
-                            final int maxVolumeMusic = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-                            final int volumeMusic = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                            int maxVolumeNotification = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
-                            int volumeNotification = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+            //                 final int maxVolumeMusic = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            //                 final int volumeMusic = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            //                 int maxVolumeNotification = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
+            //                 int volumeNotification = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
 
-                            int volume = volumeNotification * maxVolumeMusic / maxVolumeNotification;
-                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
+            //                 int volume = volumeNotification * maxVolumeMusic / maxVolumeNotification;
+            //                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
 
-                            final MediaPlayer mediaPlayer = new MediaPlayer();
-                            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                            mediaPlayer.setDataSource(getApplicationContext(), soundPath);
-                            mediaPlayer.prepare();
-                            mediaPlayer.start();
-                            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                public void onCompletion(MediaPlayer mp) {
-                                    mediaPlayer.release();
-                                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeMusic, 0);
-                                }
-                            });
-                        }
+            //                 final MediaPlayer mediaPlayer = new MediaPlayer();
+            //                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            //                 mediaPlayer.setDataSource(getApplicationContext(), soundPath);
+            //                 mediaPlayer.prepare();
+            //                 mediaPlayer.start();
+            //                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            //                     public void onCompletion(MediaPlayer mp) {
+            //                         mediaPlayer.release();
+            //                         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volumeMusic, 0);
+            //                     }
+            //                 });
+            //             }
 
-                        if (ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
-                            long[] defaultVibration = new long[] { 0, 280, 250, 280, 250 };
-                            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                            if (vibrator != null && vibrator.hasVibrator()) {
-                                if (android.os.Build.VERSION.SDK_INT >= 26) {
-                                    vibrator.vibrate(VibrationEffect.createWaveform(defaultVibration, -1));
-                                } else {
-                                    vibrator.vibrate(defaultVibration, -1);
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    Log.d(TAG, "Sound file load failed");
-                }
-            }
+            //             if (ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
+            //                 long[] defaultVibration = new long[] { 0, 280, 250, 280, 250 };
+            //                 Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            //                 if (vibrator != null && vibrator.hasVibrator()) {
+            //                     if (android.os.Build.VERSION.SDK_INT >= 26) {
+            //                         vibrator.vibrate(VibrationEffect.createWaveform(defaultVibration, -1));
+            //                     } else {
+            //                         vibrator.vibrate(defaultVibration, -1);
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //     } catch (Exception ex) {
+            //         Log.d(TAG, "Sound file load failed");
+            //     }
+            // }
 
             startActivity(intent);
 
@@ -267,7 +267,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             String channelId = this.getStringResource("default_notification_channel_id");
             String channelName = this.getStringResource("default_notification_channel_name");
             // Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
             // Uri defaultSoundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.gongdoc);
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
