@@ -321,7 +321,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     .setCustomBigContentView(bigContentView)
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setAutoCancel(true)
-                    .setSound(defaultSoundUri)
+                    // .setSound(defaultSoundUri)
                     // .setVibrate(defaultVibration)
                     .setContentIntent(pendingIntent)
                     .setPriority(NotificationCompat.PRIORITY_MAX);
@@ -359,8 +359,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                 notificationBuilder.setSound(soundPath);
             } else {
                 Log.d(TAG, "Sound was null ");
-                // notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
-                notificationBuilder.setSound(soundPath);
+                notificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
             }
 
             long[] defaultVibration = new long[] { 0, 280, 250, 280, 250 };
