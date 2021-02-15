@@ -386,15 +386,17 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     try{
                         NotificationChannel existingChannel = notificationManager.getNotificationChannel(channelId);
+                        AudioAttributes attributes = new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                            .build();
+
                         if (existingChannel != null) {
                             // notificationManager.deleteNotificationChannel(channelId);
                             existingChannel.setSound(soundPath, attributes);
                         }else{
                             NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
 
-                            AudioAttributes attributes = new AudioAttributes.Builder()
-                                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                                    .build();
+
                             if (sound != null) {
                                 channel.setSound(soundPath, attributes);
                             } else {
