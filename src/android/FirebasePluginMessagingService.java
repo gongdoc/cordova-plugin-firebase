@@ -183,8 +183,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     if (audioManager != null) {
                         int ringerMode = audioManager.getRingerMode();
                         if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
-                            Uri soundPath = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
-                            // Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
+                            // Uri soundPath = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
+                            Uri soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
                             // if (sound != null) {
                             //     soundPath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/" + sound);
                             // }
@@ -269,10 +269,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             String channelId = this.getStringResource("default_notification_channel_id");
             String channelName = this.getStringResource("default_notification_channel_name");
-
-            Uri defaultSoundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
-            // RingtoneManager.setActualDefaultRingtoneUri(this,RingtoneManager.TYPE_NOTIFICATION, gongdocSoundUri);
             // Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri defaultSoundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
             /*
@@ -386,15 +384,6 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             if (notificationManager != null) {
                 // Since android Oreo notification channel is needed.
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    // try{
-                    //     NotificationChannel existingChannel = notificationManager.getNotificationChannel(channelId);
-                    //     if (existingChannel != null) {
-                    //         notificationManager.deleteNotificationChannel(channelId);
-                    //     }
-                    // }catch(Exception e){
-
-                    // }
-
                     NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
 
                     AudioAttributes attributes = new AudioAttributes.Builder()
@@ -403,8 +392,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     if (sound != null) {
                         channel.setSound(soundPath, attributes);
                     } else {
-                        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        // Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
+                        // Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
                         channel.setSound(uri, attributes);
                     }
 
