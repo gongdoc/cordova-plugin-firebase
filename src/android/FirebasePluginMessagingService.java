@@ -386,6 +386,11 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             if (notificationManager != null) {
                 // Since android Oreo notification channel is needed.
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    NotificationChannel existingChannel = notificationManager.getNotificationChannel(channelId);
+                    if (existingChannel != null) {
+                        notificationManager.deleteNotificationChannel(channelId)
+                    }
+
                     NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
 
                     AudioAttributes attributes = new AudioAttributes.Builder()
