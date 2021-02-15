@@ -321,7 +321,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     .setCustomBigContentView(bigContentView)
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setAutoCancel(true)
-                    // .setSound(defaultSoundUri)
+                    .setSound(defaultSoundUri)
                     // .setVibrate(defaultVibration)
                     .setContentIntent(pendingIntent)
                     .setPriority(NotificationCompat.PRIORITY_MAX);
@@ -387,6 +387,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     try{
                         NotificationChannel existingChannel = notificationManager.getNotificationChannel(channelId);
                         AudioAttributes attributes = new AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                             .build();
 
