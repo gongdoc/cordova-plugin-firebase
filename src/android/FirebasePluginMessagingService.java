@@ -387,25 +387,50 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                     try{
                         NotificationChannel existingChannel = notificationManager.getNotificationChannel(channelId);
                         if (existingChannel != null) {
-                            notificationManager.deleteNotificationChannel(channelId);
+                            // notificationManager.deleteNotificationChannel(channelId);
+                            existingChannel.setSound(soundPath, attributes);
+                        }else{
+                            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+
+                            AudioAttributes attributes = new AudioAttributes.Builder()
+                                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                                    .build();
+                            if (sound != null) {
+                                channel.setSound(soundPath, attributes);
+                            } else {
+                                // Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
+                                channel.setSound(uri, attributes);
+                            }
+
+                            notificationManager.createNotificationChannel(channel);
                         }
                     }catch(Exception e){
 
                     }
-                    NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
 
-                    AudioAttributes attributes = new AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                            .build();
-                    if (sound != null) {
-                        channel.setSound(soundPath, attributes);
-                    } else {
-                        // Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
-                        channel.setSound(uri, attributes);
-                    }
+                    // try{
+                    //     NotificationChannel existingChannel = notificationManager.getNotificationChannel(channelId);
+                    //     if (existingChannel != null) {
+                    //         notificationManager.deleteNotificationChannel(channelId);
+                    //     }
+                    // }catch(Exception e){
 
-                    notificationManager.createNotificationChannel(channel);
+                    // }
+                    // NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+
+                    // AudioAttributes attributes = new AudioAttributes.Builder()
+                    //         .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    //         .build();
+                    // if (sound != null) {
+                    //     channel.setSound(soundPath, attributes);
+                    // } else {
+                    //     // Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    //     Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
+                    //     channel.setSound(uri, attributes);
+                    // }
+
+                    // notificationManager.createNotificationChannel(channel);
                 }
 
                 if (android.os.Build.VERSION.SDK_INT >= 26) {
