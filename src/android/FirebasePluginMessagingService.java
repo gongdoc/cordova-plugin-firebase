@@ -229,17 +229,6 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
             startActivity(intent);
 
-/*
-            Intent intent = new Intent(context, OverlayService.class);
-            intent.setAction(Intent.ACTION_SCREEN_ON);
-            Bundle bundle = new Bundle();
-            for (Map.Entry<String, String> entry : data.entrySet()) {
-                bundle.putString(entry.getKey(), entry.getValue());
-            }
-            intent.putExtras(bundle);
-            context.startService(intent);
-*/
-
             // save id
             FirebasePluginMessagingService.lastId = id;
         }
@@ -248,7 +237,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             PushWakeLock.acquireWakeLock(getApplicationContext());
 
             boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
-            sendNotification(id, title, text, data, showNotification, sound, lights);
+            // sendNotification(id, title, text, data, showNotification, sound, lights);
 
             PushWakeLock.releaseWakeLock();
         }
@@ -260,7 +249,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             bundle.putString(key, data.get(key));
         }
 
-        if (showNotification) {
+        if (true) {
             Intent intent = new Intent(this, OnNotificationOpenReceiver.class);
             intent.putExtras(bundle);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -384,34 +373,6 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             if (notificationManager != null) {
                 // Since android Oreo notification channel is needed.
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    // try{
-                    //     NotificationChannel existingChannel = notificationManager.getNotificationChannel(channelId);
-                    //     AudioAttributes attributes = new AudioAttributes.Builder()
-                    //         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    //         .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                    //         .build();
-
-                    //     if (existingChannel != null) {
-                    //         // notificationManager.deleteNotificationChannel(channelId);
-                    //         existingChannel.setSound(soundPath, attributes);
-                    //     }else{
-                    //         NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-
-
-                    //         if (sound != null) {
-                    //             channel.setSound(soundPath, attributes);
-                    //         } else {
-                    //             // Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    //             Uri uri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/gongdoc");
-                    //             channel.setSound(uri, attributes);
-                    //         }
-
-                    //         notificationManager.createNotificationChannel(channel);
-                    //     }
-                    // }catch(Exception e){
-
-                    // }
-
                     try{
                         notificationManager.deleteNotificationChannel(channelId);
                     }catch(final Exception e){}
