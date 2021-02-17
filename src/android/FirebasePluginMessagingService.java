@@ -237,7 +237,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             PushWakeLock.acquireWakeLock(getApplicationContext());
 
             boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
-            // sendNotification(id, title, text, data, showNotification, sound, lights);
+            sendNotification(id, title, text, data, showNotification, sound, lights);
 
             PushWakeLock.releaseWakeLock();
         }
@@ -250,6 +250,17 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         }
 
         if (true) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    try{
+                        title = "[DEL]" + title;
+                        notificationManager.deleteNotificationChannel(channelId);
+                    }catch(final Exception e){}
+                }
+            }
+
+            
             Intent intent = new Intent(this, OnNotificationOpenReceiver.class);
             intent.putExtras(bundle);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -369,7 +380,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
                 }
             }
 
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            // NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (notificationManager != null) {
                 // Since android Oreo notification channel is needed.
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
