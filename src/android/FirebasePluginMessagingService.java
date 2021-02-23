@@ -257,8 +257,8 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             if (notificationManager != null) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     try{
-                        title = "[DEL]" + title;
-                        messageBody = "[DEL]" + messageBody;
+                        // title = "[DEL]" + title;
+                        // messageBody = "[DEL]" + messageBody;
                         notificationManager.deleteNotificationChannel(channelId);
                     }catch(final Exception e){}
                 }
